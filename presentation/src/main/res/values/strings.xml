@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GitHubApp</string>
+    <string name="title_repository_detail">Repository Detail</string>
+</resources>
