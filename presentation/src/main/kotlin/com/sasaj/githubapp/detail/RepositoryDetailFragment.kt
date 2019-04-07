@@ -1,10 +1,11 @@
-package com.sasaj.githubapp
+package com.sasaj.githubapp.detail
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.sasaj.githubapp.R
 import com.sasaj.githubapp.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_repository_detail.*
 import kotlinx.android.synthetic.main.repository_detail.view.*

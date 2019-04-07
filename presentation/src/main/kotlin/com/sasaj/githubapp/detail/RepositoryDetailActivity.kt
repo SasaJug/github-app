@@ -1,10 +1,12 @@
-package com.sasaj.githubapp
+package com.sasaj.githubapp.detail
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.sasaj.githubapp.R
+import com.sasaj.githubapp.list.RepositoryListActivity
 import kotlinx.android.synthetic.main.activity_repository_detail.*
 
 /**
