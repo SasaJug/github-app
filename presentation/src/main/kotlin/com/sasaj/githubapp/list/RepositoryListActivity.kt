@@ -2,7 +2,6 @@ package com.sasaj.githubapp.list
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -27,7 +26,7 @@ class RepositoryListActivity : BaseActivity() {
     lateinit var listVMFactory: ListVMFactory
 
     private lateinit var vm: ListViewModel
-    private lateinit var adapter: SimpleItemRecyclerViewAdapter
+    private lateinit var adapter: RepositoryRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,16 +46,7 @@ class RepositoryListActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Add new place - not implemented", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
         if (repository_detail_container != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             twoPane = true
         }
 
@@ -77,7 +67,6 @@ class RepositoryListActivity : BaseActivity() {
         }
     }
 
-
     private fun renderShowList(list: List<GithubRepository>?) {
         adapter.setRepositories(list!!)
         hideProgress()
@@ -87,7 +76,6 @@ class RepositoryListActivity : BaseActivity() {
         showProgress()
     }
 
-
     private fun renderErrorState(throwable: Throwable?) {
         hideProgress()
         Log.e(TAG, "Error ", throwable)
@@ -96,7 +84,7 @@ class RepositoryListActivity : BaseActivity() {
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = SimpleItemRecyclerViewAdapter(this, twoPane)
+        adapter = RepositoryRecyclerViewAdapter(this, twoPane)
         recyclerView.adapter = adapter
     }
 

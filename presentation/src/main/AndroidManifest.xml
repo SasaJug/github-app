@@ -32,6 +32,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sasaj.githubapp.list.RepositoryListActivity" />
         </activity>
+        <activity
+            android:name=".userlist.UserListActivity"
+            android:label="@string/title_repository_users"
+            android:parentActivityName=".detail.RepositoryDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sasaj.githubapp.detail.RepositoryDetailActivity" />
+        </activity>
     </application>
 
 </manifest>

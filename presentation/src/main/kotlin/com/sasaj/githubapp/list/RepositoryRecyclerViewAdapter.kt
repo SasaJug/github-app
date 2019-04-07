@@ -1,41 +1,48 @@
 package com.sasaj.githubapp.list
 
 import android.content.Intent
+import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.sasaj.domain.Repository
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.githubapp.R
 import com.sasaj.githubapp.detail.RepositoryDetailActivity
+import com.sasaj.githubapp.detail.RepositoryDetailFragment
+import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_REPOSITORY_HTML_URL
+import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_REPOSITORY_NAME
+import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_USER_NAME
 import kotlinx.android.synthetic.main.repository_list_content.view.*
 
 
-class SimpleItemRecyclerViewAdapter(private val parentActivity: RepositoryListActivity,
+class RepositoryRecyclerViewAdapter(private val parentActivity: RepositoryListActivity,
                                     private val twoPane: Boolean) :
-        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
+        RecyclerView.Adapter<RepositoryRecyclerViewAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
     private var repositories = listOf<GithubRepository>()
 
     init {
         onClickListener = View.OnClickListener { v ->
-            val repository = v.tag as Repository
+            val repository = v.tag as GithubRepository
             if (twoPane) {
-//                val fragment = LocationDetailFragment().apply {
-//                    arguments = Bundle().apply {
-//                        putInt(LocationDetailFragment.ARG_CITY, repository.id)
-//                    }
-//                }
-//                parentActivity.supportFragmentManager
-//                        .beginTransaction()
-//                        .replace(R.id.location_detail_container, fragment)
-//                        .commit()
+                val fragment = RepositoryDetailFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_USER_NAME, repository.ownerName)
+                        putString(ARG_REPOSITORY_NAME, repository.name)
+                    }
+                }
+                parentActivity.supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.repository_detail_container, fragment)
+                        .commit()
             } else {
                 val intent = Intent(v.context, RepositoryDetailActivity::class.java).apply {
-//                    putExtra(LocationDetailFragment.ARG_CITY, repository)
+                    putExtra(ARG_USER_NAME, repository.ownerName)
+                    putExtra(ARG_REPOSITORY_NAME, repository.name)
+                    putExtra(ARG_REPOSITORY_HTML_URL, repository.htmlUrl)
                 }
 
                 v.context.startActivity(intent)

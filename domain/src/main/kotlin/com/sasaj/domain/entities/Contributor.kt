@@ -7,4 +7,4 @@ data class Contributor(
         val url: String = "N/A",
         val htmlUrl: String = "N/A",
         val contributions: Int = 0
-)
+) : GitHubUser

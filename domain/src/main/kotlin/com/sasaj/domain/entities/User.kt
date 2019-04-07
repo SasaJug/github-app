@@ -6,4 +6,4 @@ data class User(
         val avatarUrl: String = "N/A",
         val url: String = "N/A",
         val htmlUrl: String = "N/A"
-)
+) : GitHubUser

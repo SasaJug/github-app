@@ -15,7 +15,7 @@ class GetRepositoryStargazersUseCase(transformer: Transformer<List<User>>,
         val data = HashMap<String, String>()
         data[PARAM_USER_NAME] = userName
         data[PARAM_REPO_NAME] = repositoryName
-        return observable()
+        return observable(data)
     }
 
     override fun createObservable(data: Map<String, Any>?): Observable<List<User>> {

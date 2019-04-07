@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">GitHubApp</string>
     <string name="title_repository_detail">Repository Detail</string>
+    <string name="title_repository_users">Repository Data</string>
+    <string name="owner">Owner:</string>
+    <string name="stargazers">Stargazers:</string>
+    <string name="contributors">Contributors:</string>
 </resources>

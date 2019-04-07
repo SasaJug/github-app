@@ -24,7 +24,7 @@ interface GitHubService {
                           @Path("repositoryName") repositoryName: String): Single<List<ContributorDto>>
 
 
-    @GET("repos/{user}/{repositoryName}/contributors")
+    @GET("repos/{user}/{repositoryName}/stargazers")
     fun getUserRepositoryStargazers(@Path("user") user: String,
                                       @Path("repositoryName") repositoryName: String): Single<List<UserDto>>
 }

@@ -1,11 +1,13 @@
 package com.sasaj.githubapp.detail
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.sasaj.githubapp.R
+import com.sasaj.githubapp.common.BaseActivity
 import com.sasaj.githubapp.list.RepositoryListActivity
 import kotlinx.android.synthetic.main.activity_repository_detail.*
 
@@ -15,21 +17,17 @@ import kotlinx.android.synthetic.main.activity_repository_detail.*
  * item details are presented side-by-side with a list of items
  * in a [RepositoryListActivity].
  */
-class RepositoryDetailActivity : AppCompatActivity() {
+class RepositoryDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository_detail)
         setSupportActionBar(detail_toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
 
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        supportActionBar?.title = intent.getStringExtra(RepositoryDetailFragment.ARG_REPOSITORY_NAME)
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -44,14 +42,22 @@ class RepositoryDetailActivity : AppCompatActivity() {
             // using a fragment transaction.
             val fragment = RepositoryDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(RepositoryDetailFragment.ARG_ITEM_ID,
-                            intent.getStringExtra(RepositoryDetailFragment.ARG_ITEM_ID))
+                    putString(RepositoryDetailFragment.ARG_USER_NAME,
+                            intent.getStringExtra(RepositoryDetailFragment.ARG_USER_NAME))
+                    putString(RepositoryDetailFragment.ARG_REPOSITORY_NAME,
+                            intent.getStringExtra(RepositoryDetailFragment.ARG_REPOSITORY_NAME))
                 }
             }
 
             supportFragmentManager.beginTransaction()
                     .add(R.id.repository_detail_container, fragment)
                     .commit()
+        }
+
+        fab.setOnClickListener { _ ->
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(intent.getStringExtra(RepositoryDetailFragment.ARG_REPOSITORY_HTML_URL))
+            startActivity(i)
         }
     }
 
