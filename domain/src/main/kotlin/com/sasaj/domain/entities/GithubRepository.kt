@@ -1,7 +1,7 @@
 package com.sasaj.domain.entities
 
 data class GithubRepository (
-
+        val id : Long = 0,
         val name : String? = "N/A",
         val fullName : String? = "N/A",
         val ownerName : String? = "N/A",

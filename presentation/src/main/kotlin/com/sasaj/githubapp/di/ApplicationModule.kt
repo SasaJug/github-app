@@ -1,13 +1,13 @@
 package com.sasaj.githubapp.di
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import com.sasaj.data.LocalRepository
 import com.sasaj.data.RemoteRepository
 import com.sasaj.data.RepositoryImpl
-import com.sasaj.data.common.ContributorDtoToDomainMapper
-import com.sasaj.data.common.RepositoryDtoToDomainMapper
-import com.sasaj.data.common.UserDtoToDomainMapper
+import com.sasaj.data.common.*
+import com.sasaj.data.database.AppDb
 import com.sasaj.data.httpclient.GitHubService
 import com.sasaj.data.httpclient.RetrofitClient
 import com.sasaj.domain.NetworkManager
@@ -81,6 +81,12 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
+    fun providesAppDatabase(context: Context): AppDb {
+        return Room.databaseBuilder(context, AppDb::class.java, "GithubAppDb").fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
     fun provideHttpClient(githubService: GitHubService): RetrofitClient {
         return RetrofitClient(githubService)
     }
@@ -104,10 +110,25 @@ class ApplicationModule(private val context: Context) {
         return ContributorDtoToDomainMapper()
     }
 
+
     @Provides
     @Singleton
-    fun provideLocalRepository(): LocalRepository {
-        return LocalRepository()
+    fun providerepositoryDbToToDomainMapper(): RepositoryDbToDomainMapper {
+        return RepositoryDbToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun providerepositoryDomainToToDbMapper(): RepositoryDomainToDbMapper {
+        return RepositoryDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalRepository(appDb: AppDb,
+                               repositoryDbToDomainMapper: RepositoryDbToDomainMapper,
+                               repositoryDomainToDbMapper: RepositoryDomainToDbMapper): LocalRepository {
+        return LocalRepository(appDb, repositoryDbToDomainMapper, repositoryDomainToDbMapper)
     }
 
     @Provides

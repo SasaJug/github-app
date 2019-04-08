@@ -13,6 +13,10 @@ class GetAllRepositoriesUseCase(transformer: Transformer<List<GithubRepository>>
         return observable()
     }
 
+    fun requestMore(){
+        repository.requestMore()
+    }
+
     override fun createObservable(data: Map<String, Any>?): Observable<List<GithubRepository>> {
         return repository.getPublicRepositories()
     }

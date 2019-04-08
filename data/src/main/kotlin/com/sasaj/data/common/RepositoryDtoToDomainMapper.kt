@@ -8,6 +8,7 @@ class RepositoryDtoToDomainMapper : Mapper<RepositoryDto, GithubRepository>() {
 
     override fun mapFrom(from: RepositoryDto): GithubRepository {
         return GithubRepository(
+                id = from.id,
                 name = from.name,
                 fullName = from.full_name,
                 ownerName = from.owner.login,

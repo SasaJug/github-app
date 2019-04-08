@@ -4,10 +4,11 @@ import com.sasaj.data.entities.ContributorDto
 import com.sasaj.data.entities.RepositoryDto
 import com.sasaj.data.entities.UserDto
 import io.reactivex.Single
+import retrofit2.Call
 
 open class RetrofitClient (private val service : GitHubService){
 
-    fun getRepositories(since: Int): Single<List<RepositoryDto>> {
+    fun getRepositories(since: Long): Call<List<RepositoryDto>> {
         return service.getRepositories(since)
     }
 

@@ -4,6 +4,7 @@ import com.sasaj.data.entities.ContributorDto
 import com.sasaj.data.entities.RepositoryDto
 import com.sasaj.data.entities.UserDto
 import io.reactivex.Single
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,7 +13,7 @@ import retrofit2.http.Query
 interface GitHubService {
 
     @GET("repositories")
-    fun getRepositories(@Query("since") cityId: Int): Single<List<RepositoryDto>>
+    fun getRepositories(@Query("since") repositoryId: Long): Call<List<RepositoryDto>>
 
     @GET("repos/{user}/{repositoryName}")
     fun getUserRepository(@Path("user") user: String,

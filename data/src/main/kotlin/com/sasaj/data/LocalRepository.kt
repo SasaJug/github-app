@@ -1,27 +1,31 @@
 package com.sasaj.data
 
-import com.sasaj.domain.Repository
-import com.sasaj.domain.entities.Contributor
+import com.sasaj.data.common.RepositoryDbToDomainMapper
+import com.sasaj.data.common.RepositoryDomainToDbMapper
+import com.sasaj.data.database.AppDb
 import com.sasaj.domain.entities.GithubRepository
-import com.sasaj.domain.entities.User
 import io.reactivex.Observable
+import java.util.concurrent.Executors
 
-class LocalRepository : Repository {
-    override fun getPublicRepositories(): Observable<List<GithubRepository>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class LocalRepository(private val appDb: AppDb,
+                      private val repositoryDbToDomainMapper: RepositoryDbToDomainMapper,
+                      private val repositoryDomainToDbMapper: RepositoryDomainToDbMapper) {
+
+
+    fun getPublicRepositories(): Observable<List<GithubRepository>> {
+        return appDb.gitHubRepositoryDao().getRepositories().map { repoDbList -> repositoryDbToDomainMapper.mapFrom(repoDbList) }.toObservable()
     }
 
-    override fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun insertRepositories(list: List<GithubRepository>) {
+        Executors.newSingleThreadExecutor().execute {
+            val listDb = list.map { repo -> repositoryDomainToDbMapper.mapFrom(repo) }
+            appDb.gitHubRepositoryDao().insert(listDb)
+        }
     }
 
-    override fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun deleteAllRepositories() {
+        Executors.newSingleThreadExecutor().execute {
+            appDb.gitHubRepositoryDao().deleteAll()
+        }
     }
-
-    override fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
 }

@@ -7,7 +7,7 @@ import com.sasaj.domain.usecases.GetAllRepositoriesUseCase
 import com.sasaj.githubapp.common.BaseViewModel
 import com.sasaj.githubapp.common.SingleLiveEvent
 
-class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUseCase) : BaseViewModel(){
+class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUseCase) : BaseViewModel() {
 
     val listLiveData: MutableLiveData<ListViewState> = MutableLiveData()
     var errorState: SingleLiveEvent<Throwable?> = SingleLiveEvent()
@@ -35,8 +35,17 @@ class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUse
         )
     }
 
+
+    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
+        if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
+            getAllRepositoriesUseCase.requestMore()
+        }
+    }
+
     companion object {
-        const val TAG : String = "ListViewModel"
+        const val TAG: String = "ListViewModel"
+        private const val VISIBLE_THRESHOLD = 5
+
     }
 
 }

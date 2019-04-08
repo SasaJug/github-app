@@ -51,6 +51,7 @@ ext {
     debugDbVersion = "1.0.3"
     archRuntimeVersion = "1.1.1"
     archVersion = "1.1.1"
+    pagingVersion = "1.0.0-beta1"
 
 
     junitVersion = "4.12"
