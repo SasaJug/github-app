@@ -7,6 +7,7 @@ import com.sasaj.domain.entities.User
 class UserDtoToDomainMapper : Mapper<UserDto, User>() {
     override fun mapFrom(from: UserDto): User {
         return User(
+                id = from.id,
                 login = from.login,
                 avatarUrl = from.avatar_url,
                 url = from.url,

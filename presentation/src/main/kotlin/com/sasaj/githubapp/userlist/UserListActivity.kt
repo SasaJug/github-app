@@ -8,6 +8,7 @@ import android.util.Log
 import android.arch.lifecycle.ViewModelProviders
 import com.sasaj.domain.entities.GitHubUser
 import com.sasaj.domain.entities.GithubRepository
+import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R
 import com.sasaj.githubapp.common.BaseActivity
@@ -108,6 +109,22 @@ class UserListActivity : BaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = UserRecyclerViewAdapter(this, twoPane)
         recyclerView.adapter = adapter
+        setupScrollListener()
+    }
+
+
+    private fun setupScrollListener() {
+        val layoutManager = repository_list.layoutManager as LinearLayoutManager
+        repository_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount, type, userName, repoName)
+            }
+        })
     }
 
 
@@ -116,7 +133,7 @@ class UserListActivity : BaseActivity() {
         const val USER_TYPE : String = "user_type"
         const val USER_NAME : String = "user_name"
         const val REPOSITORY_NAME : String = "repo_name"
-        const val CONTRIBUTORS : Int = 1
-        const val STARGAZERS : Int = 2
+        const val CONTRIBUTORS : Int = RequestMoreUseCase.CONST_CONTRIBUTOR
+        const val STARGAZERS : Int = RequestMoreUseCase.CONST_STARGAZER
     }
 }

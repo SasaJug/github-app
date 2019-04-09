@@ -7,6 +7,7 @@ import com.sasaj.domain.entities.Contributor
 class ContributorDtoToDomainMapper : Mapper<ContributorDto, Contributor>() {
     override fun mapFrom(from: ContributorDto): Contributor{
         return Contributor(
+                id = from.id,
                 login = from.login,
                 avatarUrl = from.avatar_url,
                 url = from.url,

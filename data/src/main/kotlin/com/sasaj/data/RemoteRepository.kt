@@ -101,6 +101,7 @@ class RemoteRepository(private val httpClient: RetrofitClient,
             }
         }
         )
+
     }
 
     @Deprecated("Use methods that support paging")
@@ -110,7 +111,7 @@ class RemoteRepository(private val httpClient: RetrofitClient,
                 .toObservable()
     }
 
-    @Deprecated("Use methods that support paging")
+
     fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
         return httpClient.getContributorsForRepository(username, repositoryName, page = 1)
                 .map { contributorDto -> contributorDtoToDomainMapper.mapFrom(contributorDto) }

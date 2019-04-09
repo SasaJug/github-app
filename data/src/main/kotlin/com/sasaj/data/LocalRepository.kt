@@ -6,7 +6,6 @@ import com.sasaj.domain.entities.Contributor
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.domain.entities.User
 import io.reactivex.Observable
-import java.util.concurrent.Executors
 
 class LocalRepository(private val appDb: AppDb,
                       private val repositoryDbToDomainMapper: RepositoryDbToDomainMapper,
@@ -22,16 +21,12 @@ class LocalRepository(private val appDb: AppDb,
     }
 
     fun insertRepositories(list: List<GithubRepository>) {
-        Executors.newSingleThreadExecutor().execute {
-            val listDb = list.map { repo -> repositoryDomainToDbMapper.mapFrom(repo) }
-            appDb.gitHubRepositoryDao().insert(listDb)
-        }
+        val listDb = list.map { repo -> repositoryDomainToDbMapper.mapFrom(repo) }
+        appDb.gitHubRepositoryDao().insert(listDb)
     }
 
     fun deleteAllRepositories() {
-        Executors.newSingleThreadExecutor().execute {
-            appDb.gitHubRepositoryDao().deleteAll()
-        }
+        appDb.gitHubRepositoryDao().deleteAll()
     }
 
     fun getContributors(): Observable<List<Contributor>> {
@@ -39,33 +34,24 @@ class LocalRepository(private val appDb: AppDb,
     }
 
     fun insertContributors(list: List<Contributor>) {
-        Executors.newSingleThreadExecutor().execute {
-            val listDb = list.map { contributor -> contributorDomainToDbMapper.mapFrom(contributor) }
-            appDb.contributorDao().insert(listDb)
-        }
+        val listDb = list.map { contributor -> contributorDomainToDbMapper.mapFrom(contributor) }
+        appDb.contributorDao().insert(listDb)
     }
 
     fun deleteAllContributors() {
-        Executors.newSingleThreadExecutor().execute {
-            appDb.contributorDao().deleteAll()
-        }
+        appDb.contributorDao().deleteAll()
     }
-
 
     fun getStargazers(): Observable<List<User>> {
         return appDb.stargazerDao().getStargazers().map { stargazerDbList -> stargazerDbToDomainMapper.mapFrom(stargazerDbList) }.toObservable()
     }
 
     fun insertStargazers(list: List<User>) {
-        Executors.newSingleThreadExecutor().execute {
-            val listDb = list.map { stargazer -> stargazerDomainToDbMapper.mapFrom(stargazer) }
-            appDb.stargazerDao().insert(listDb)
-        }
+        val listDb = list.map { stargazer -> stargazerDomainToDbMapper.mapFrom(stargazer) }
+        appDb.stargazerDao().insert(listDb)
     }
 
     fun deleteAllStargazers() {
-        Executors.newSingleThreadExecutor().execute {
-            appDb.stargazerDao().deleteAll()
-        }
+        appDb.stargazerDao().deleteAll()
     }
 }

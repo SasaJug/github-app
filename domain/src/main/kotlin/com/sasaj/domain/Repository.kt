@@ -9,7 +9,7 @@ interface Repository {
 
     fun getPublicRepositories(): Observable<List<GithubRepository>>
 
-    fun requestMore()
+    fun requestMore(type: Int, username: String, repositoryName: String) : Observable<Boolean>
 
     fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository>
 

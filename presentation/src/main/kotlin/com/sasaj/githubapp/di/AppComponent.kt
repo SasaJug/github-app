@@ -8,7 +8,10 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    (ApplicationModule::class)
+    (ApplicationModule::class),
+    (RepositoryListModule::class),
+    (RepositoryDetailModule::class),
+    (UserListModule::class)
 ])
 interface AppComponent {
     fun inject(repositoryListActivity: RepositoryListActivity)

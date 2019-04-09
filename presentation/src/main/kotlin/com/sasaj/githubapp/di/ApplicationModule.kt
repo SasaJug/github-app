@@ -12,10 +12,7 @@ import com.sasaj.data.httpclient.GitHubService
 import com.sasaj.data.httpclient.RetrofitClient
 import com.sasaj.domain.NetworkManager
 import com.sasaj.domain.Repository
-import com.sasaj.domain.usecases.GetAllRepositoriesUseCase
-import com.sasaj.domain.usecases.GetRepositoryContributorsUseCase
-import com.sasaj.domain.usecases.GetRepositoryStargazersUseCase
-import com.sasaj.domain.usecases.GetSingleRepositoryUseCase
+import com.sasaj.domain.usecases.*
 import com.sasaj.githubapp.BuildConfig
 import com.sasaj.githubapp.common.ASyncTransformer
 import com.sasaj.githubapp.common.NetworkManagerImpl
@@ -57,7 +54,7 @@ class ApplicationModule(private val context: Context) {
     @Singleton
     fun provideOkhttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
@@ -82,7 +79,9 @@ class ApplicationModule(private val context: Context) {
     @Provides
     @Singleton
     fun providesAppDatabase(context: Context): AppDb {
-        return Room.databaseBuilder(context, AppDb::class.java, "GithubAppDb").fallbackToDestructiveMigration().build()
+        return Room.databaseBuilder(context, AppDb::class.java, "GithubAppDb")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration().build()
     }
 
     @Provides
@@ -90,7 +89,6 @@ class ApplicationModule(private val context: Context) {
     fun provideHttpClient(githubService: GitHubService): RetrofitClient {
         return RetrofitClient(githubService)
     }
-
 
     @Provides
     @Singleton
@@ -182,45 +180,8 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideGetAllRepositoriesUseCase(repository: Repository): GetAllRepositoriesUseCase {
-        return GetAllRepositoriesUseCase(ASyncTransformer(), repository)
+    fun provideReqestMoreUseCase(repository: Repository): RequestMoreUseCase {
+        return RequestMoreUseCase(ASyncTransformer(), repository)
     }
 
-    @Provides
-    @Singleton
-    fun provideGetSingleRepositoriesUseCase(repository: Repository): GetSingleRepositoryUseCase {
-        return GetSingleRepositoryUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetRepositoryStargazersUseCase(repository: Repository): GetRepositoryStargazersUseCase {
-        return GetRepositoryStargazersUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetRepositoryContributorsUseCase(repository: Repository): GetRepositoryContributorsUseCase {
-        return GetRepositoryContributorsUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideListVMFactory(getAllRepositoriesUseCase: GetAllRepositoriesUseCase): ListVMFactory {
-        return ListVMFactory(getAllRepositoriesUseCase)
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideDetailVMFactory(getSingleRepositoryUseCase: GetSingleRepositoryUseCase): DetailVMFactory {
-        return DetailVMFactory(getSingleRepositoryUseCase)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserListVMFactory(getRepositoryStargazersUseCase: GetRepositoryStargazersUseCase,
-                                 getRepositoryContributorsUseCase: GetRepositoryContributorsUseCase): UserListVMFactory {
-        return UserListVMFactory(getRepositoryStargazersUseCase, getRepositoryContributorsUseCase)
-    }
 }

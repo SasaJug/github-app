@@ -4,10 +4,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.domain.usecases.GetAllRepositoriesUseCase
+import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.common.BaseViewModel
 import com.sasaj.githubapp.common.SingleLiveEvent
 
-class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUseCase) : BaseViewModel() {
+class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUseCase,
+                    private val requestMoreUseCase: RequestMoreUseCase) : BaseViewModel() {
 
     val listLiveData: MutableLiveData<ListViewState> = MutableLiveData()
     var errorState: SingleLiveEvent<Throwable?> = SingleLiveEvent()
@@ -38,7 +40,7 @@ class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUse
 
     fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            getAllRepositoriesUseCase.requestMore()
+            requestMoreUseCase.requestMore(RequestMoreUseCase.CONST_REPOSITORY)
         }
     }
 

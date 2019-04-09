@@ -8,7 +8,7 @@ data class UserDto(
         val gists_url: String,
         val gravatar_id: String,
         val html_url: String,
-        val id: Int,
+        val id: Long,
         val login: String,
         val node_id: String,
         val organizations_url: String,
