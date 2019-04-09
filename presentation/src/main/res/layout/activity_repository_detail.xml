@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".RepositoryDetailActivity"
+    tools:context=".detail.RepositoryDetailActivity"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout
@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="56dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -49,6 +49,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/repository_detail_container"
         app:layout_anchorGravity="top|end"
-        app:srcCompat="@android:drawable/stat_notify_chat" />
+        app:srcCompat="@drawable/ic_launch_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,18 +1,20 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
     defaultConfig {
         applicationId "com.sasaj.githubapp"
-        minSdkVersion 23
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_URL", '"https://api.github.com/"')
     }
     buildTypes {
         release {
@@ -20,16 +22,52 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:design:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:exifinterface:$rootProject.supportLibraryVersion"
+
+    implementation project(':data')
+    implementation project(':domain')
+
+    // architecture components
+    implementation "android.arch.lifecycle:runtime:$rootProject.ext.archRuntimeVersion"
+    implementation "android.arch.lifecycle:extensions:$rootProject.ext.archVersion"
+    implementation "android.arch.lifecycle:reactivestreams:$rootProject.ext.archVersion"
+    implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayoutVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.ext.archRuntimeVersion"
+
+    //RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+
+    //Dagger
+    implementation "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    implementation "com.google.dagger:dagger-android:$rootProject.ext.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.ext.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+    implementation "javax.annotation:jsr250-api:$rootProject.ext.jsr250Version"
+
+    //Picasso
+    implementation "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
+
+    //Testing
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    testImplementation "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
+    testImplementation "android.arch.core:core-testing:1.1.1"
+    androidTestImplementation "com.android.support.test:runner:$rootProject.supportTestRunnerVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+
+    androidTestImplementation "android.arch.core:core-testing:1.1.1"
 }
