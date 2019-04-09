@@ -33,6 +33,12 @@ dependencies {
 
     implementation project(':domain')
 
+    //Room
+    api "android.arch.persistence.room:runtime:$rootProject.archVersion"
+    api "android.arch.persistence.room:rxjava2:$rootProject.archVersion"
+    kapt "android.arch.persistence.room:compiler:$rootProject.archVersion"
+
+    //Retrofit
     api "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
     api "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
     api "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofitVersion"

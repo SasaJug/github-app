@@ -1,21 +1,18 @@
 package com.sasaj.githubapp.di
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import com.sasaj.data.LocalRepository
 import com.sasaj.data.RemoteRepository
 import com.sasaj.data.RepositoryImpl
-import com.sasaj.data.common.ContributorDtoToDomainMapper
-import com.sasaj.data.common.RepositoryDtoToDomainMapper
-import com.sasaj.data.common.UserDtoToDomainMapper
+import com.sasaj.data.common.*
+import com.sasaj.data.database.AppDb
 import com.sasaj.data.httpclient.GitHubService
 import com.sasaj.data.httpclient.RetrofitClient
 import com.sasaj.domain.NetworkManager
 import com.sasaj.domain.Repository
-import com.sasaj.domain.usecases.GetAllRepositoriesUseCase
-import com.sasaj.domain.usecases.GetRepositoryContributorsUseCase
-import com.sasaj.domain.usecases.GetRepositoryStargazersUseCase
-import com.sasaj.domain.usecases.GetSingleRepositoryUseCase
+import com.sasaj.domain.usecases.*
 import com.sasaj.githubapp.BuildConfig
 import com.sasaj.githubapp.common.ASyncTransformer
 import com.sasaj.githubapp.common.NetworkManagerImpl
@@ -81,10 +78,17 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
+    fun providesAppDatabase(context: Context): AppDb {
+        return Room.databaseBuilder(context, AppDb::class.java, "GithubAppDb")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
     fun provideHttpClient(githubService: GitHubService): RetrofitClient {
         return RetrofitClient(githubService)
     }
-
 
     @Provides
     @Singleton
@@ -104,10 +108,59 @@ class ApplicationModule(private val context: Context) {
         return ContributorDtoToDomainMapper()
     }
 
+
     @Provides
     @Singleton
-    fun provideLocalRepository(): LocalRepository {
-        return LocalRepository()
+    fun providerepositoryDbToToDomainMapper(): RepositoryDbToDomainMapper {
+        return RepositoryDbToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepositoryDomainToDbMapper(): RepositoryDomainToDbMapper {
+        return RepositoryDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContributorDomainToDbMapper(): ContributorDomainToDbMapper {
+        return ContributorDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStargazerDbToDomainMapper(): StargazerDbToDomainMapper {
+        return StargazerDbToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStargazerDomainToDbMapper(): StargazerDomainToDbMapper {
+        return StargazerDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContributorDbToDomainMapper(): ContributorDbToDomainMapper {
+        return ContributorDbToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalRepository(appDb: AppDb,
+                               repositoryDbToDomainMapper: RepositoryDbToDomainMapper,
+                               repositoryDomainToDbMapper: RepositoryDomainToDbMapper,
+                               contributorDbToDomainMapper: ContributorDbToDomainMapper,
+                               contributorDomainToDbMapper: ContributorDomainToDbMapper,
+                               stargazerDbToDomainMapper: StargazerDbToDomainMapper,
+                               stargazerDomainToDbMapper: StargazerDomainToDbMapper): LocalRepository {
+        return LocalRepository(appDb,
+                repositoryDbToDomainMapper,
+                repositoryDomainToDbMapper,
+                contributorDbToDomainMapper,
+                contributorDomainToDbMapper,
+                stargazerDbToDomainMapper,
+                stargazerDomainToDbMapper)
     }
 
     @Provides
@@ -127,45 +180,8 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideGetAllRepositoriesUseCase(repository: Repository): GetAllRepositoriesUseCase {
-        return GetAllRepositoriesUseCase(ASyncTransformer(), repository)
+    fun provideReqestMoreUseCase(repository: Repository): RequestMoreUseCase {
+        return RequestMoreUseCase(ASyncTransformer(), repository)
     }
 
-    @Provides
-    @Singleton
-    fun provideGetSingleRepositoriesUseCase(repository: Repository): GetSingleRepositoryUseCase {
-        return GetSingleRepositoryUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetRepositoryStargazersUseCase(repository: Repository): GetRepositoryStargazersUseCase {
-        return GetRepositoryStargazersUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetRepositoryContributorsUseCase(repository: Repository): GetRepositoryContributorsUseCase {
-        return GetRepositoryContributorsUseCase(ASyncTransformer(), repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideListVMFactory(getAllRepositoriesUseCase: GetAllRepositoriesUseCase): ListVMFactory {
-        return ListVMFactory(getAllRepositoriesUseCase)
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideDetailVMFactory(getSingleRepositoryUseCase: GetSingleRepositoryUseCase): DetailVMFactory {
-        return DetailVMFactory(getSingleRepositoryUseCase)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserListVMFactory(getRepositoryStargazersUseCase: GetRepositoryStargazersUseCase,
-                                 getRepositoryContributorsUseCase: GetRepositoryContributorsUseCase): UserListVMFactory {
-        return UserListVMFactory(getRepositoryStargazersUseCase, getRepositoryContributorsUseCase)
-    }
 }

@@ -1,14 +1,13 @@
 package com.sasaj.data.common
 
-import com.sasaj.data.entities.ContributorDto
-import com.sasaj.data.entities.UserDto
+import com.sasaj.data.httpclient.entities.ContributorDto
 import com.sasaj.domain.common.Mapper
 import com.sasaj.domain.entities.Contributor
-import com.sasaj.domain.entities.User
 
 class ContributorDtoToDomainMapper : Mapper<ContributorDto, Contributor>() {
     override fun mapFrom(from: ContributorDto): Contributor{
         return Contributor(
+                id = from.id,
                 login = from.login,
                 avatarUrl = from.avatar_url,
                 url = from.url,

@@ -68,6 +68,7 @@ class RepositoryListActivity : BaseActivity() {
     }
 
     private fun renderShowList(list: List<GithubRepository>?) {
+        list!!.map { element -> Log.e(TAG, element.name+", "+element.id) }
         adapter.setRepositories(list!!)
         hideProgress()
     }
@@ -86,6 +87,21 @@ class RepositoryListActivity : BaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = RepositoryRecyclerViewAdapter(this, twoPane)
         recyclerView.adapter = adapter
+        setupScrollListener()
+    }
+
+    private fun setupScrollListener() {
+        val layoutManager = repository_list.layoutManager as LinearLayoutManager
+        repository_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+            }
+        })
     }
 
 

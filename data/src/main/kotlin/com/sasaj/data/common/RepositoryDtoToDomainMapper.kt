@@ -1,6 +1,6 @@
 package com.sasaj.data.common
 
-import com.sasaj.data.entities.RepositoryDto
+import com.sasaj.data.httpclient.entities.RepositoryDto
 import com.sasaj.domain.common.Mapper
 import com.sasaj.domain.entities.GithubRepository
 
@@ -8,6 +8,7 @@ class RepositoryDtoToDomainMapper : Mapper<RepositoryDto, GithubRepository>() {
 
     override fun mapFrom(from: RepositoryDto): GithubRepository {
         return GithubRepository(
+                id = from.id,
                 name = from.name,
                 fullName = from.full_name,
                 ownerName = from.owner.login,
