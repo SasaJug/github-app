@@ -25,6 +25,7 @@ This project is maintained by:
 ## ToDo
 1. Implement 25 results per page for repository list.
 2. Implement authentication.
+3. Add tests.
 
 ## Contributing
 
