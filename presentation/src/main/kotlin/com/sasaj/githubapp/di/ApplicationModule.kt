@@ -57,7 +57,7 @@ class ApplicationModule(private val context: Context) {
     @Singleton
     fun provideOkhttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
         return OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
@@ -119,16 +119,50 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun providerepositoryDomainToToDbMapper(): RepositoryDomainToDbMapper {
+    fun provideRepositoryDomainToDbMapper(): RepositoryDomainToDbMapper {
         return RepositoryDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContributorDomainToDbMapper(): ContributorDomainToDbMapper {
+        return ContributorDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStargazerDbToDomainMapper(): StargazerDbToDomainMapper {
+        return StargazerDbToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStargazerDomainToDbMapper(): StargazerDomainToDbMapper {
+        return StargazerDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContributorDbToDomainMapper(): ContributorDbToDomainMapper {
+        return ContributorDbToDomainMapper()
     }
 
     @Provides
     @Singleton
     fun provideLocalRepository(appDb: AppDb,
                                repositoryDbToDomainMapper: RepositoryDbToDomainMapper,
-                               repositoryDomainToDbMapper: RepositoryDomainToDbMapper): LocalRepository {
-        return LocalRepository(appDb, repositoryDbToDomainMapper, repositoryDomainToDbMapper)
+                               repositoryDomainToDbMapper: RepositoryDomainToDbMapper,
+                               contributorDbToDomainMapper: ContributorDbToDomainMapper,
+                               contributorDomainToDbMapper: ContributorDomainToDbMapper,
+                               stargazerDbToDomainMapper: StargazerDbToDomainMapper,
+                               stargazerDomainToDbMapper: StargazerDomainToDbMapper): LocalRepository {
+        return LocalRepository(appDb,
+                repositoryDbToDomainMapper,
+                repositoryDomainToDbMapper,
+                contributorDbToDomainMapper,
+                contributorDomainToDbMapper,
+                stargazerDbToDomainMapper,
+                stargazerDomainToDbMapper)
     }
 
     @Provides
