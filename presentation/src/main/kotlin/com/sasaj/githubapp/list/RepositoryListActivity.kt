@@ -68,7 +68,6 @@ class RepositoryListActivity : BaseActivity() {
     }
 
     private fun renderShowList(list: List<GithubRepository>?) {
-        list!!.map { element -> Log.e(TAG, element.name+", "+element.id) }
         adapter.setRepositories(list!!)
         hideProgress()
     }
