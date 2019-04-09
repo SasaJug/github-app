@@ -1,4 +1,4 @@
-package com.sasaj.data.entities
+package com.sasaj.data.httpclient.entities
 
 import com.google.gson.annotations.SerializedName
 

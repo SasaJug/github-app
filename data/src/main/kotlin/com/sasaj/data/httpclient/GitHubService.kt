@@ -1,8 +1,8 @@
 package com.sasaj.data.httpclient
 
-import com.sasaj.data.entities.ContributorDto
-import com.sasaj.data.entities.RepositoryDto
-import com.sasaj.data.entities.UserDto
+import com.sasaj.data.httpclient.entities.ContributorDto
+import com.sasaj.data.httpclient.entities.RepositoryDto
+import com.sasaj.data.httpclient.entities.UserDto
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
@@ -20,12 +20,27 @@ interface GitHubService {
                           @Path("repositoryName") repositoryName: String): Single<RepositoryDto>
 
 
+
+    @GET("repos/{user}/{repositoryName}/stargazers")
+    fun getStargazersForRepository(@Path("user") user: String,
+                                    @Path("repositoryName") repositoryName: String,
+                                    @Query("page") page: Int): Call<List<UserDto>>
+
+
+    @GET("repos/{user}/{repositoryName}/contributors")
+    fun getContributorsForRepository(@Path("user") user: String,
+                                      @Path("repositoryName") repositoryName: String,
+                                      @Query("page") page: Int): Call<List<ContributorDto>>
+
+
     @GET("repos/{user}/{repositoryName}/contributors")
     fun getUserRepositoryContributors(@Path("user") user: String,
-                          @Path("repositoryName") repositoryName: String): Single<List<ContributorDto>>
+                                      @Path("repositoryName") repositoryName: String,
+                                      @Query("page") page: Int): Single<List<ContributorDto>>
 
 
     @GET("repos/{user}/{repositoryName}/stargazers")
     fun getUserRepositoryStargazers(@Path("user") user: String,
-                                      @Path("repositoryName") repositoryName: String): Single<List<UserDto>>
+                                    @Path("repositoryName") repositoryName: String,
+                                    @Query("page") page: Int): Single<List<UserDto>>
 }
