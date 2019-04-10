@@ -19,9 +19,12 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
 
     override fun getPublicRepositories(): Observable<List<GithubRepository>> {
 
-        localRepository.deleteAllRepositories()
-        lastRepository = 0
-        requestAndSaveRepositories()
+        if(lastRepository == 0L){
+            localRepository.deleteAllRepositories()
+            lastRepository = 0
+            requestAndSaveRepositories()
+        }
+
 
         // Get data from the local cache
         return localRepository.getPublicRepositories()
@@ -36,8 +39,6 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
             }
             true
         }
-
-
     }
 
     private fun requestAndSaveRepositories() {
@@ -54,7 +55,6 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                     Log.e(TAG, error)
                     isRequestInProgress = false
                 })
-
     }
 
     override fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository> {
