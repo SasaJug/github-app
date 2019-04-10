@@ -69,7 +69,7 @@ class UserListViewModel(private val getRepositoryStargazersUseCase: GetRepositor
 
     companion object {
         const val TAG: String = "UserViewModel"
-        private const val VISIBLE_THRESHOLD = 5
+        private const val VISIBLE_THRESHOLD = 1
     }
 
 }

@@ -104,19 +104,19 @@ class RemoteRepository(private val httpClient: RetrofitClient,
 
     }
 
-    @Deprecated("Use methods that support paging")
-    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
-        return httpClient.getStargazersForRepository(username, repositoryName, page = 1)
-                .map { userDto -> userDtoToDomainMapper.mapFrom(userDto) }
-                .toObservable()
-    }
+//    @Deprecated("Use methods that support paging")
+//    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
+//        return httpClient.getStargazersForRepository(username, repositoryName, page = 1)
+//                .map { userDto -> userDtoToDomainMapper.mapFrom(userDto) }
+//                .toObservable()
+//    }
 
 
-    fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
-        return httpClient.getContributorsForRepository(username, repositoryName, page = 1)
-                .map { contributorDto -> contributorDtoToDomainMapper.mapFrom(contributorDto) }
-                .toObservable()
-    }
+//    fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
+//        return httpClient.getContributorsForRepository(username, repositoryName, page = 1)
+//                .map { contributorDto -> contributorDtoToDomainMapper.mapFrom(contributorDto) }
+//                .toObservable()
+//    }
 
     companion object {
         const val TAG: String = "RemoteRepository"

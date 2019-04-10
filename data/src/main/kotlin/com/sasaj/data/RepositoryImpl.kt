@@ -14,32 +14,23 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     private var lastStargazersPage: Int = 0
     private var lastContributorsPage: Int = 0
 
+    private var currentUserName: String = ""
+    private var currentRepoName: String = ""
+
     // avoid triggering multiple requests in the same time
     private var isRequestInProgress = false
 
     override fun getPublicRepositories(): Observable<List<GithubRepository>> {
 
-        if(lastRepository == 0L){
+        if (lastRepository == 0L) {
             localRepository.deleteAllRepositories()
-            lastRepository = 0
             requestAndSaveRepositories()
         }
-
 
         // Get data from the local cache
         return localRepository.getPublicRepositories()
     }
 
-    override fun requestMore(type: Int, username: String, repositoryName: String) : Observable<Boolean>{
-        return Observable.fromCallable<Boolean>{
-            when(type){
-                RequestMoreUseCase.CONST_REPOSITORY -> requestAndSaveRepositories()
-                RequestMoreUseCase.CONST_CONTRIBUTOR -> requestAndSaveContributors(username, repositoryName)
-                RequestMoreUseCase.CONST_STARGAZER -> requestAndSaveStargazers(username, repositoryName)
-            }
-            true
-        }
-    }
 
     private fun requestAndSaveRepositories() {
         if (isRequestInProgress) return
@@ -57,17 +48,19 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                 })
     }
 
-    override fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository> {
-        return remoteRepository.getSingleRepository(username, repositoryName)
-    }
 
     override fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
-//        return remoteRepository.getStargazersForRepository(username, repositoryName)
 
-        localRepository.deleteAllStargazers()
-        lastStargazersPage = 1
-        requestAndSaveStargazers(username, repositoryName)
+        if (currentUserName != username || currentRepoName != repositoryName) {
+            lastStargazersPage = 1
+            currentUserName = username
+            currentRepoName = repositoryName
+        }
 
+        if (lastStargazersPage == 1) {
+            localRepository.deleteAllStargazers()
+            requestAndSaveStargazers(username, repositoryName)
+        }
         // Get data from the local cache
         return localRepository.getStargazers()
     }
@@ -89,12 +82,17 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     }
 
     override fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
-//        return remoteRepository.getContributorsForRepository(username, repositoryName)
 
-        localRepository.deleteAllContributors()
-        lastContributorsPage = 1
-        requestAndSaveContributors(username, repositoryName)
+        if (currentUserName != username || currentRepoName != repositoryName) {
+            lastContributorsPage = 1
+            currentUserName = username
+            currentRepoName = repositoryName
+        }
 
+        if (lastContributorsPage == 1) {
+            localRepository.deleteAllContributors()
+            requestAndSaveContributors(username, repositoryName)
+        }
         // Get data from the local cache
         return localRepository.getContributors()
     }
@@ -113,6 +111,23 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                     Log.e(TAG, error)
                     isRequestInProgress = false
                 })
+    }
+
+
+    override fun requestMore(type: Int, username: String, repositoryName: String): Observable<Boolean> {
+        return Observable.fromCallable<Boolean> {
+            when (type) {
+                RequestMoreUseCase.CONST_REPOSITORY -> requestAndSaveRepositories()
+                RequestMoreUseCase.CONST_CONTRIBUTOR -> requestAndSaveContributors(username, repositoryName)
+                RequestMoreUseCase.CONST_STARGAZER -> requestAndSaveStargazers(username, repositoryName)
+            }
+            true
+        }
+    }
+
+
+    override fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository> {
+        return remoteRepository.getSingleRepository(username, repositoryName)
     }
 
     companion object {

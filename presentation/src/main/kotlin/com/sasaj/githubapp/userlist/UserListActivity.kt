@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.widget.DividerItemDecoration
 import com.sasaj.domain.entities.GitHubUser
 import com.sasaj.domain.entities.GithubRepository
+import com.sasaj.domain.entities.User
 import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R

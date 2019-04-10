@@ -47,7 +47,6 @@ class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUse
     companion object {
         const val TAG: String = "ListViewModel"
         private const val VISIBLE_THRESHOLD = 5
-
     }
 
 }
