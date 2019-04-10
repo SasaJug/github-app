@@ -93,6 +93,8 @@ class RepositoryDetailFragment : Fragment() {
                 fullname.text = repository.fullName
                 description.text = repository.description
                 owner.text = repository.ownerName
+                size.text = repository.size
+                forks.text = repository.forksCount.toString()
                 stargazersCount.text = "Stargazers count:  ${repository.stargazersCount}"
                 contributorsCount.text = "View Contributors "
 

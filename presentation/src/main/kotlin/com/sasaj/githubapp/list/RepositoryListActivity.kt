@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.arch.lifecycle.ViewModelProviders
+import android.support.v7.widget.DividerItemDecoration
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R
@@ -84,6 +85,8 @@ class RepositoryListActivity : BaseActivity() {
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(this)
+        val decoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        recyclerView.addItemDecoration(decoration)
         adapter = RepositoryRecyclerViewAdapter(this, twoPane)
         recyclerView.adapter = adapter
         setupScrollListener()
