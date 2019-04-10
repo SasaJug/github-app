@@ -54,7 +54,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/detail_margin_bottom"
             android:gravity="start"
             >
 
@@ -79,10 +79,64 @@
 
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/detail_margin_bottom"
+            android:gravity="start"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textSize="20sp"
+                android:textColor="@color/textDarkPrimary"
+                android:text="@string/size"/>
+
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@color/textDarkPrimary"
+                android:gravity="end" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/detail_margin_bottom"
+            android:gravity="start"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textSize="20sp"
+                android:textColor="@color/textDarkPrimary"
+                android:text="@string/forks"/>
+
+            <TextView
+                android:id="@+id/forks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@color/textDarkPrimary"
+                android:gravity="end" />
+        </LinearLayout>
+
+
+        <LinearLayout
             android:id="@+id/stargazers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/detail_margin_bottom"
             android:gravity="start"
             >
 
@@ -110,7 +164,7 @@
             android:id="@+id/contributors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/detail_margin_bottom"
             android:gravity="start"
             >
 

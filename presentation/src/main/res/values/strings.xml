@@ -3,6 +3,8 @@
     <string name="title_repository_detail">Repository Detail</string>
     <string name="title_repository_users">Repository Data</string>
     <string name="owner">Owner:</string>
-    <string name="stargazers">Stargazers:</string>
+    <string name="stargazers">Stars:</string>
     <string name="contributors">Contributors:</string>
+    <string name="size">Size:</string>
+    <string name="forks">Forks:</string>
 </resources>
