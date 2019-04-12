@@ -10,12 +10,16 @@ import io.reactivex.Observable
 
 class RepositoryImpl(private val remoteRepository: RemoteRepository, private val localRepository: LocalRepository) : Repository {
 
+    private var first: String? = ""
+    private var prev: String? = ""
+    private var next: String? = ""
+    private var last: String? = ""
+
     private var lastRepository: Long = 0
     private var lastStargazersPage: Int = 0
     private var lastContributorsPage: Int = 0
 
-    private var currentUserName: String = ""
-    private var currentRepoName: String = ""
+    private var currentUrl: String = ""
 
     // avoid triggering multiple requests in the same time
     private var isRequestInProgress = false
@@ -49,31 +53,38 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     }
 
 
-    override fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
+    override fun getStargazersForRepository(url: String): Observable<List<User>> {
 
-        if (currentUserName != username || currentRepoName != repositoryName) {
-            lastStargazersPage = 1
-            currentUserName = username
-            currentRepoName = repositoryName
+        if (currentUrl != url) {
+            currentUrl = url
+            first = ""
+            prev = ""
+            next = url
+            last = ""
         }
 
-        if (lastStargazersPage == 1) {
+        if (first == "") {
             localRepository.deleteAllStargazers()
-            requestAndSaveStargazers(username, repositoryName)
+            requestAndSaveStargazers()
         }
         // Get data from the local cache
         return localRepository.getStargazers()
     }
 
-    private fun requestAndSaveStargazers(username: String, repositoryName: String) {
+    private fun requestAndSaveStargazers() {
+        if (last == null) return
         if (isRequestInProgress) return
 
         isRequestInProgress = true
-        remoteRepository.getStargazers(lastStargazersPage, username, repositoryName,
-                { stargazers ->
+        remoteRepository.getStargazers(next!!,
+                { stargazers, first, previous, next, last ->
                     lastStargazersPage += 1
                     localRepository.insertStargazers(stargazers)
                     isRequestInProgress = false
+                    this.first = first
+                    this.prev = previous
+                    this.next = next
+                    this.last = last
                 },
                 { error ->
                     Log.e(TAG, error)
@@ -81,31 +92,38 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                 })
     }
 
-    override fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
+    override fun getContributorsForRepository(url: String): Observable<List<Contributor>> {
 
-        if (currentUserName != username || currentRepoName != repositoryName) {
-            lastContributorsPage = 1
-            currentUserName = username
-            currentRepoName = repositoryName
+        if (currentUrl != url) {
+            currentUrl = url
+            first = ""
+            prev = ""
+            next = url
+            last = ""
         }
 
-        if (lastContributorsPage == 1) {
+        if (first == "") {
             localRepository.deleteAllContributors()
-            requestAndSaveContributors(username, repositoryName)
+            requestAndSaveContributors()
         }
         // Get data from the local cache
         return localRepository.getContributors()
     }
 
-    private fun requestAndSaveContributors(username: String, repositoryName: String) {
+    private fun requestAndSaveContributors() {
+        if (last == null) return
         if (isRequestInProgress) return
 
         isRequestInProgress = true
-        remoteRepository.getContributors(lastContributorsPage, username, repositoryName,
-                { contributors ->
+        remoteRepository.getContributors(next!!,
+                { contributors, first, previous, next, last ->
                     lastContributorsPage += 1
                     localRepository.insertContributors(contributors)
                     isRequestInProgress = false
+                    this.first = first
+                    this.prev = previous
+                    this.next = next
+                    this.last = last
                 },
                 { error ->
                     Log.e(TAG, error)
@@ -114,12 +132,12 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     }
 
 
-    override fun requestMore(type: Int, username: String, repositoryName: String): Observable<Boolean> {
+    override fun requestMore(type: Int): Observable<Boolean> {
         return Observable.fromCallable<Boolean> {
             when (type) {
                 RequestMoreUseCase.CONST_REPOSITORY -> requestAndSaveRepositories()
-                RequestMoreUseCase.CONST_CONTRIBUTOR -> requestAndSaveContributors(username, repositoryName)
-                RequestMoreUseCase.CONST_STARGAZER -> requestAndSaveStargazers(username, repositoryName)
+                RequestMoreUseCase.CONST_CONTRIBUTOR -> requestAndSaveContributors()
+                RequestMoreUseCase.CONST_STARGAZER -> requestAndSaveStargazers()
             }
             true
         }
@@ -129,6 +147,7 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     override fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository> {
         return remoteRepository.getSingleRepository(username, repositoryName)
     }
+    
 
     companion object {
         const val TAG: String = "RepositoryImpl"

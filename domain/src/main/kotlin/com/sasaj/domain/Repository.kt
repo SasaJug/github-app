@@ -9,11 +9,13 @@ interface Repository {
 
     fun getPublicRepositories(): Observable<List<GithubRepository>>
 
-    fun requestMore(type: Int, username: String, repositoryName: String) : Observable<Boolean>
+    fun requestMore(type: Int) : Observable<Boolean>
 
     fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository>
 
-    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>>
+//    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>>
 
-    fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>>
+    fun getStargazersForRepository(url: String): Observable<List<User>>
+
+    fun getContributorsForRepository(url: String): Observable<List<Contributor>>
 }

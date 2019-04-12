@@ -21,31 +21,12 @@ class UserListViewModel(private val getRepositoryStargazersUseCase: GetRepositor
         listLiveData.value = UserListViewState()
     }
 
-    fun getRepositoryStargazers(userName: String, repositoryName: String) {
+
+    fun getRepositoryContributors(url: String) {
         val listViewState = listLiveData.value?.copy(state = UserListViewState.LOADING)
         listLiveData.value = listViewState
 
-        addDisposable(getRepositoryStargazersUseCase.getRepositoryStargazers(userName, repositoryName)
-                .subscribe(
-                        { list: List<User> ->
-                            val newListViewState = listLiveData.value?.copy(state = UserListViewState.STARGAZERS_LOADED, stargazersList = list)
-                            listLiveData.value = newListViewState
-                            errorState.value = null
-                        },
-                        { e ->
-                            errorState.value = e
-                        },
-                        { Log.i(TAG, "Repo list fetched") }
-                )
-        )
-    }
-
-
-    fun getRepositoryContributors(userName: String, repositoryName: String) {
-        val listViewState = listLiveData.value?.copy(state = UserListViewState.LOADING)
-        listLiveData.value = listViewState
-
-        addDisposable(getRepositoryContributorsUseCase.getRepositoryContributors(userName, repositoryName)
+        addDisposable(getRepositoryContributorsUseCase.getRepositoryContributors(url)
                 .subscribe(
                         { list: List<Contributor> ->
                             val newListViewState = listLiveData.value?.copy(state = UserListViewState.CONTRIBUTORS_LOADED, contributorsList = list)
@@ -55,15 +36,35 @@ class UserListViewModel(private val getRepositoryStargazersUseCase: GetRepositor
                         { e ->
                             errorState.value = e
                         },
-                        { Log.i(TAG, "Repo list fetched") }
+                        { Log.i(TAG, "Contributors list fetched") }
                 )
         )
     }
 
 
-    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int, type: Int, userName: String, repositoryName: String) {
+    fun getRepositoryStargazers(url: String) {
+        val listViewState = listLiveData.value?.copy(state = UserListViewState.LOADING)
+        listLiveData.value = listViewState
+
+        addDisposable(getRepositoryStargazersUseCase.getRepositoryStargazers(url)
+                .subscribe(
+                        { list: List<User> ->
+                            val newListViewState = listLiveData.value?.copy(state = UserListViewState.STARGAZERS_LOADED, stargazersList = list)
+                            listLiveData.value = newListViewState
+                            errorState.value = null
+                        },
+                        { e ->
+                            errorState.value = e
+                        },
+                        { Log.i(TAG, "User list fetched") }
+                )
+        )
+    }
+
+
+    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int, type: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            requestMoreUseCase.requestMore(type, userName, repositoryName).subscribe()
+            requestMoreUseCase.requestMore(type).subscribe()
         }
     }
 

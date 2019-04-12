@@ -3,6 +3,7 @@ package com.sasaj.githubapp.common
 import android.app.ProgressDialog
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import com.sasaj.domain.usecases.RequestMoreUseCase
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -40,4 +41,14 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     open fun resetViewModel(){}
+
+    companion object {
+        const val ARG_USER_TYPE : String = "user_type"
+        const val ARG_USER_NAME: String = "user_name"
+        const val ARG_REPOSITORY_NAME: String = "repository_name"
+        const val ARG_REPOSITORY_HTML_URL: String = "repository_html_url"
+        const val ARG_USER_URL: String = "user_url"
+        const val CONTRIBUTORS : Int = RequestMoreUseCase.CONST_CONTRIBUTOR
+        const val STARGAZERS : Int = RequestMoreUseCase.CONST_STARGAZER
+    }
 }

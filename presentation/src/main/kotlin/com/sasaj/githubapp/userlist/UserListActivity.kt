@@ -1,24 +1,16 @@
 package com.sasaj.githubapp.userlist
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.widget.DividerItemDecoration
 import com.sasaj.domain.entities.GitHubUser
-import com.sasaj.domain.entities.GithubRepository
-import com.sasaj.domain.entities.User
-import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R
 import com.sasaj.githubapp.common.BaseActivity
-import com.sasaj.githubapp.detail.RepositoryDetailFragment
-import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_USER_NAME
-import com.sasaj.githubapp.list.ListViewModel
-import com.sasaj.githubapp.list.ListViewState
-import com.sasaj.githubapp.list.RepositoryRecyclerViewAdapter
 import com.sasaj.githubapp.userlist.UserListViewState.Companion.CONTRIBUTORS_LOADED
 import com.sasaj.githubapp.userlist.UserListViewState.Companion.LOADING
 import com.sasaj.githubapp.userlist.UserListViewState.Companion.STARGAZERS_LOADED
@@ -41,8 +33,7 @@ class UserListActivity : BaseActivity() {
     private lateinit var adapter: UserRecyclerViewAdapter
 
     private var type: Int = 0
-    private lateinit var userName: String
-    private lateinit var repoName: String
+    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,9 +53,8 @@ class UserListActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        type = intent.getIntExtra(USER_TYPE, 0)
-        userName = intent.getStringExtra(USER_NAME)
-        repoName = intent.getStringExtra(REPOSITORY_NAME)
+        type = intent.getIntExtra(ARG_USER_TYPE, 0)
+        url = intent.getStringExtra(ARG_USER_URL)
 
         if (repository_detail_container != null) {
             twoPane = true
@@ -76,10 +66,10 @@ class UserListActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(type == CONTRIBUTORS){
-            vm.getRepositoryContributors(userName, repoName)
+        if (type == CONTRIBUTORS) {
+            vm.getRepositoryContributors(url)
         } else {
-            vm.getRepositoryStargazers(userName, repoName)
+            vm.getRepositoryStargazers(url)
         }
     }
 
@@ -126,7 +116,7 @@ class UserListActivity : BaseActivity() {
                 val visibleItemCount = layoutManager.childCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
-                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount, type, userName, repoName)
+                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount, type)
             }
         })
     }
@@ -134,10 +124,5 @@ class UserListActivity : BaseActivity() {
 
     companion object {
         private val TAG = UserListActivity::class.java.simpleName
-        const val USER_TYPE : String = "user_type"
-        const val USER_NAME : String = "user_name"
-        const val REPOSITORY_NAME : String = "repo_name"
-        const val CONTRIBUTORS : Int = RequestMoreUseCase.CONST_CONTRIBUTOR
-        const val STARGAZERS : Int = RequestMoreUseCase.CONST_STARGAZER
     }
 }

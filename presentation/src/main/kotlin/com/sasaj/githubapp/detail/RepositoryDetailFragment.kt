@@ -11,12 +11,13 @@ import android.view.ViewGroup
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_REPOSITORY_NAME
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_USER_NAME
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_USER_TYPE
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_USER_URL
+import com.sasaj.githubapp.common.BaseActivity.Companion.CONTRIBUTORS
+import com.sasaj.githubapp.common.BaseActivity.Companion.STARGAZERS
 import com.sasaj.githubapp.userlist.UserListActivity
-import com.sasaj.githubapp.userlist.UserListActivity.Companion.CONTRIBUTORS
-import com.sasaj.githubapp.userlist.UserListActivity.Companion.REPOSITORY_NAME
-import com.sasaj.githubapp.userlist.UserListActivity.Companion.STARGAZERS
-import com.sasaj.githubapp.userlist.UserListActivity.Companion.USER_NAME
-import com.sasaj.githubapp.userlist.UserListActivity.Companion.USER_TYPE
 import kotlinx.android.synthetic.main.repository_detail.*
 import javax.inject.Inject
 
@@ -89,7 +90,6 @@ class RepositoryDetailFragment : Fragment() {
             showProgress(false)
             val repository = detailsViewState.repository
             repository?.let {
-                //                Picasso.get().load(weather.iconUri).resize(iconSize.toInt(), iconSize.toInt()).centerCrop().into(weatherIcon)
                 fullname.text = repository.fullName
                 description.text = repository.description
                 owner.text = repository.ownerName
@@ -100,18 +100,16 @@ class RepositoryDetailFragment : Fragment() {
 
                 stargazers.setOnClickListener { v ->
                     val intent = Intent(v.context, UserListActivity::class.java).apply {
-                        putExtra(USER_TYPE, STARGAZERS)
-                        putExtra(USER_NAME, repository.ownerName)
-                        putExtra(REPOSITORY_NAME, repository.name)
+                        putExtra(ARG_USER_TYPE, STARGAZERS)
+                        putExtra(ARG_USER_URL, repository.stargazersUrl)
                     }
                     startActivity(intent)
                 }
 
                 contributors.setOnClickListener { v ->
                     val intent = Intent(v.context, UserListActivity::class.java).apply {
-                        putExtra(USER_TYPE, CONTRIBUTORS)
-                        putExtra(USER_NAME, repository.ownerName)
-                        putExtra(REPOSITORY_NAME, repository.name)
+                        putExtra(ARG_USER_TYPE, CONTRIBUTORS)
+                        putExtra(ARG_USER_URL, repository.contributorsUrl)
                     }
                     startActivity(intent)
                 }
@@ -136,12 +134,6 @@ class RepositoryDetailFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * The fragment argument representing identifiers of the repository that this fragment
-         * represents.
-         */
-        val ARG_USER_NAME: String = "user_name"
-        val ARG_REPOSITORY_NAME: String = "repository_name"
-        val ARG_REPOSITORY_HTML_URL: String = "repository_html_url"
+
     }
 }

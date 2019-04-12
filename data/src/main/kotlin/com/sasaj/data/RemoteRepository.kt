@@ -4,6 +4,7 @@ import android.util.Log
 import com.sasaj.data.common.ContributorDtoToDomainMapper
 import com.sasaj.data.common.RepositoryDtoToDomainMapper
 import com.sasaj.data.common.UserDtoToDomainMapper
+import com.sasaj.data.httpclient.PageLinks
 import com.sasaj.data.httpclient.RetrofitClient
 import com.sasaj.data.httpclient.entities.ContributorDto
 import com.sasaj.data.httpclient.entities.RepositoryDto
@@ -52,13 +53,11 @@ class RemoteRepository(private val httpClient: RetrofitClient,
     }
 
 
-    fun getContributors(page: Int,
-                        username: String,
-                        repositoryName: String,
-                        onSuccess: (stargazers: List<Contributor>) -> Unit,
+    fun getContributors(url: String,
+                        onSuccess: (contributors: List<Contributor>, first: String?, prev: String?, next: String?, last: String?) -> Unit,
                         onError: (error: String) -> Unit) {
 
-        httpClient.getContributors(username, repositoryName, page).enqueue(object : Callback<List<ContributorDto>> {
+        httpClient.getContributors(url).enqueue(object : Callback<List<ContributorDto>> {
             override fun onFailure(call: Call<List<ContributorDto>>?, t: Throwable?) {
                 Log.d(TAG, "fail to get data")
                 onError(t!!.message ?: "unknown error")
@@ -68,7 +67,8 @@ class RemoteRepository(private val httpClient: RetrofitClient,
                 Log.d(TAG, "got a response $response")
                 if (response.isSuccessful) {
                     val contributors = response.body() ?: emptyList()
-                    onSuccess(contributors.map { list -> contributorDtoToDomainMapper.mapFrom(list) })
+                    val links = PageLinks((response.headers().get("Link")))
+                    onSuccess(contributors.map { list -> contributorDtoToDomainMapper.mapFrom(list) }, links.first, links.prev, links.next, links.last)
                 } else {
                     onError(response.errorBody()?.string() ?: "Unknown error")
                 }
@@ -77,14 +77,11 @@ class RemoteRepository(private val httpClient: RetrofitClient,
         )
     }
 
-
-    fun getStargazers(page: Int,
-                      username: String,
-                      repositoryName: String,
-                      onSuccess: (stargazers: List<User>) -> Unit,
+    fun getStargazers(url: String,
+                      onSuccess: (stargazers: List<User>, first: String?, prev: String?, next: String?, last: String?) -> Unit,
                       onError: (error: String) -> Unit) {
 
-        httpClient.getStargazers(username, repositoryName, page).enqueue(object : Callback<List<UserDto>> {
+        httpClient.getStargazers(url).enqueue(object : Callback<List<UserDto>> {
             override fun onFailure(call: Call<List<UserDto>>?, t: Throwable?) {
                 Log.d(TAG, "fail to get data")
                 onError(t!!.message ?: "unknown error")
@@ -94,7 +91,8 @@ class RemoteRepository(private val httpClient: RetrofitClient,
                 Log.d(TAG, "got a response $response")
                 if (response.isSuccessful) {
                     val stargazers = response.body() ?: emptyList()
-                    onSuccess(stargazers.map { list -> userDtoToDomainMapper.mapFrom(list) })
+                    val links = PageLinks((response.headers().get("Link")))
+                    onSuccess(stargazers.map { list -> userDtoToDomainMapper.mapFrom(list) }, links.first, links.prev, links.next, links.last)
                 } else {
                     onError(response.errorBody()?.string() ?: "Unknown error")
                 }
@@ -104,19 +102,6 @@ class RemoteRepository(private val httpClient: RetrofitClient,
 
     }
 
-//    @Deprecated("Use methods that support paging")
-//    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>> {
-//        return httpClient.getStargazersForRepository(username, repositoryName, page = 1)
-//                .map { userDto -> userDtoToDomainMapper.mapFrom(userDto) }
-//                .toObservable()
-//    }
-
-
-//    fun getContributorsForRepository(username: String, repositoryName: String): Observable<List<Contributor>> {
-//        return httpClient.getContributorsForRepository(username, repositoryName, page = 1)
-//                .map { contributorDto -> contributorDtoToDomainMapper.mapFrom(contributorDto) }
-//                .toObservable()
-//    }
 
     companion object {
         const val TAG: String = "RemoteRepository"

@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.githubapp.R
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_REPOSITORY_HTML_URL
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_REPOSITORY_NAME
+import com.sasaj.githubapp.common.BaseActivity.Companion.ARG_USER_NAME
 import com.sasaj.githubapp.detail.RepositoryDetailActivity
 import com.sasaj.githubapp.detail.RepositoryDetailFragment
-import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_REPOSITORY_HTML_URL
-import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_REPOSITORY_NAME
-import com.sasaj.githubapp.detail.RepositoryDetailFragment.Companion.ARG_USER_NAME
 import kotlinx.android.synthetic.main.repository_list_content.view.*
 
 

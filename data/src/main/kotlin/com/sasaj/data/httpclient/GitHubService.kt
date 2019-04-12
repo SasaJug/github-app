@@ -8,6 +8,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 
 interface GitHubService {
@@ -20,27 +21,11 @@ interface GitHubService {
                           @Path("repositoryName") repositoryName: String): Single<RepositoryDto>
 
 
-
-    @GET("repos/{user}/{repositoryName}/stargazers")
-    fun getStargazersForRepository(@Path("user") user: String,
-                                    @Path("repositoryName") repositoryName: String,
-                                    @Query("page") page: Int): Call<List<UserDto>>
+    @GET
+    fun getStargazersForRepository(@Url url : String): Call<List<UserDto>>
 
 
-    @GET("repos/{user}/{repositoryName}/contributors")
-    fun getContributorsForRepository(@Path("user") user: String,
-                                      @Path("repositoryName") repositoryName: String,
-                                      @Query("page") page: Int): Call<List<ContributorDto>>
+    @GET
+    fun getContributorsForRepository(@Url url : String): Call<List<ContributorDto>>
 
-
-    @GET("repos/{user}/{repositoryName}/contributors")
-    fun getUserRepositoryContributors(@Path("user") user: String,
-                                      @Path("repositoryName") repositoryName: String,
-                                      @Query("page") page: Int): Single<List<ContributorDto>>
-
-
-    @GET("repos/{user}/{repositoryName}/stargazers")
-    fun getUserRepositoryStargazers(@Path("user") user: String,
-                                    @Path("repositoryName") repositoryName: String,
-                                    @Query("page") page: Int): Single<List<UserDto>>
 }
