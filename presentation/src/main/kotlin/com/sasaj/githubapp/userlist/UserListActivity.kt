@@ -7,7 +7,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import com.sasaj.domain.entities.GitHubUser
+import com.sasaj.domain.entities.User
 import com.sasaj.githubapp.GitHubApplication
 import com.sasaj.githubapp.R
 import com.sasaj.githubapp.common.BaseActivity
@@ -66,11 +66,7 @@ class UserListActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (type == CONTRIBUTORS) {
-            vm.getRepositoryContributors(url)
-        } else {
-            vm.getRepositoryStargazers(url)
-        }
+        vm.getRepositoryUsers(url)
     }
 
 
@@ -82,7 +78,7 @@ class UserListActivity : BaseActivity() {
         }
     }
 
-    private fun renderShowList(list: List<GitHubUser>?) {
+    private fun renderShowList(list: List<User>?) {
         adapter.setUsers(list!!)
         hideProgress()
     }

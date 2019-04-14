@@ -2,7 +2,7 @@ package com.sasaj.data.httpclient
 
 import com.sasaj.data.httpclient.entities.ContributorDto
 import com.sasaj.data.httpclient.entities.RepositoryDto
-import com.sasaj.data.httpclient.entities.UserDto
+import com.sasaj.data.httpclient.entities.StargazerDto
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
@@ -22,10 +22,10 @@ interface GitHubService {
 
 
     @GET
-    fun getStargazersForRepository(@Url url : String): Call<List<UserDto>>
+    fun getStargazersForRepository(@Url url: String): Call<List<StargazerDto>>
 
 
     @GET
-    fun getContributorsForRepository(@Url url : String): Call<List<ContributorDto>>
+    fun getContributorsForRepository(@Url url: String): Call<List<ContributorDto>>
 
 }

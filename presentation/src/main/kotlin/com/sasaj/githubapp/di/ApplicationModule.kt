@@ -6,19 +6,19 @@ import android.net.ConnectivityManager
 import com.sasaj.data.LocalRepository
 import com.sasaj.data.RemoteRepository
 import com.sasaj.data.RepositoryImpl
-import com.sasaj.data.common.*
+import com.sasaj.data.database.mappers.*
 import com.sasaj.data.database.AppDb
 import com.sasaj.data.httpclient.GitHubService
 import com.sasaj.data.httpclient.RetrofitClient
+import com.sasaj.data.httpclient.mappers.ContributorDtoToDomainMapper
+import com.sasaj.data.httpclient.mappers.RepositoryDtoToDomainMapper
+import com.sasaj.data.httpclient.mappers.UserDtoToDomainMapper
 import com.sasaj.domain.NetworkManager
 import com.sasaj.domain.Repository
 import com.sasaj.domain.usecases.*
 import com.sasaj.githubapp.BuildConfig
 import com.sasaj.githubapp.common.ASyncTransformer
 import com.sasaj.githubapp.common.NetworkManagerImpl
-import com.sasaj.githubapp.detail.DetailVMFactory
-import com.sasaj.githubapp.list.ListVMFactory
-import com.sasaj.githubapp.userlist.UserListVMFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -145,6 +145,19 @@ class ApplicationModule(private val context: Context) {
         return ContributorDbToDomainMapper()
     }
 
+
+    @Provides
+    @Singleton
+    fun provideStateDomainToDbMapper(): StateDomainToDbMapper {
+        return StateDomainToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStateDbToDomainMapper(): StateDbToDomainMapper {
+        return StateDbToDomainMapper()
+    }
+
     @Provides
     @Singleton
     fun provideLocalRepository(appDb: AppDb,
@@ -153,14 +166,18 @@ class ApplicationModule(private val context: Context) {
                                contributorDbToDomainMapper: ContributorDbToDomainMapper,
                                contributorDomainToDbMapper: ContributorDomainToDbMapper,
                                stargazerDbToDomainMapper: StargazerDbToDomainMapper,
-                               stargazerDomainToDbMapper: StargazerDomainToDbMapper): LocalRepository {
+                               stargazerDomainToDbMapper: StargazerDomainToDbMapper,
+                               stateDbToDomainMapper: StateDbToDomainMapper,
+                               stateDomainToDbMapper: StateDomainToDbMapper): LocalRepository {
         return LocalRepository(appDb,
                 repositoryDbToDomainMapper,
                 repositoryDomainToDbMapper,
                 contributorDbToDomainMapper,
                 contributorDomainToDbMapper,
                 stargazerDbToDomainMapper,
-                stargazerDomainToDbMapper)
+                stargazerDomainToDbMapper,
+                stateDbToDomainMapper,
+                stateDomainToDbMapper)
     }
 
     @Provides

@@ -1,4 +1,4 @@
-package com.sasaj.data.common
+package com.sasaj.data.httpclient.mappers
 
 import com.sasaj.data.httpclient.entities.RepositoryDto
 import com.sasaj.domain.common.Mapper

@@ -1,16 +1,16 @@
 package com.sasaj.data
 
 import android.util.Log
-import com.sasaj.data.common.ContributorDtoToDomainMapper
-import com.sasaj.data.common.RepositoryDtoToDomainMapper
-import com.sasaj.data.common.UserDtoToDomainMapper
+import com.sasaj.data.httpclient.mappers.ContributorDtoToDomainMapper
+import com.sasaj.data.httpclient.mappers.RepositoryDtoToDomainMapper
+import com.sasaj.data.httpclient.mappers.UserDtoToDomainMapper
 import com.sasaj.data.httpclient.PageLinks
 import com.sasaj.data.httpclient.RetrofitClient
 import com.sasaj.data.httpclient.entities.ContributorDto
 import com.sasaj.data.httpclient.entities.RepositoryDto
-import com.sasaj.data.httpclient.entities.UserDto
-import com.sasaj.domain.entities.Contributor
+import com.sasaj.data.httpclient.entities.StargazerDto
 import com.sasaj.domain.entities.GithubRepository
+import com.sasaj.domain.entities.State
 import com.sasaj.domain.entities.User
 import io.reactivex.Observable
 import retrofit2.Call
@@ -54,13 +54,13 @@ class RemoteRepository(private val httpClient: RetrofitClient,
 
 
     fun getContributors(url: String,
-                        onSuccess: (contributors: List<Contributor>, first: String?, prev: String?, next: String?, last: String?) -> Unit,
-                        onError: (error: String) -> Unit) {
+                        onSuccess: (contributors: List<User>, state: State) -> Unit,
+                        onError: (error: Throwable) -> Unit) {
 
         httpClient.getContributors(url).enqueue(object : Callback<List<ContributorDto>> {
             override fun onFailure(call: Call<List<ContributorDto>>?, t: Throwable?) {
                 Log.d(TAG, "fail to get data")
-                onError(t!!.message ?: "unknown error")
+                onError(t!!)
             }
 
             override fun onResponse(call: Call<List<ContributorDto>>?, response: Response<List<ContributorDto>>) {
@@ -68,9 +68,10 @@ class RemoteRepository(private val httpClient: RetrofitClient,
                 if (response.isSuccessful) {
                     val contributors = response.body() ?: emptyList()
                     val links = PageLinks((response.headers().get("Link")))
-                    onSuccess(contributors.map { list -> contributorDtoToDomainMapper.mapFrom(list) }, links.first, links.prev, links.next, links.last)
+                    onSuccess(contributors.map { list -> contributorDtoToDomainMapper.mapFrom(list) },
+                            links.getState())
                 } else {
-                    onError(response.errorBody()?.string() ?: "Unknown error")
+                    onError(RuntimeException(response.errorBody()?.string() ?: "Unknown error"))
                 }
             }
         }
@@ -78,23 +79,24 @@ class RemoteRepository(private val httpClient: RetrofitClient,
     }
 
     fun getStargazers(url: String,
-                      onSuccess: (stargazers: List<User>, first: String?, prev: String?, next: String?, last: String?) -> Unit,
-                      onError: (error: String) -> Unit) {
+                      onSuccess: (stargazers: List<User>, state: State) -> Unit,
+                      onError: (error: Throwable) -> Unit) {
 
-        httpClient.getStargazers(url).enqueue(object : Callback<List<UserDto>> {
-            override fun onFailure(call: Call<List<UserDto>>?, t: Throwable?) {
-                Log.d(TAG, "fail to get data")
-                onError(t!!.message ?: "unknown error")
+        httpClient.getStargazers(url).enqueue(object : Callback<List<StargazerDto>> {
+            override fun onFailure(call: Call<List<StargazerDto>>?, t: Throwable?) {
+                Log.e(TAG, "fail to get data")
+                onError(t!!)
             }
 
-            override fun onResponse(call: Call<List<UserDto>>?, response: Response<List<UserDto>>) {
+            override fun onResponse(call: Call<List<StargazerDto>>?, response: Response<List<StargazerDto>>) {
                 Log.d(TAG, "got a response $response")
                 if (response.isSuccessful) {
                     val stargazers = response.body() ?: emptyList()
                     val links = PageLinks((response.headers().get("Link")))
-                    onSuccess(stargazers.map { list -> userDtoToDomainMapper.mapFrom(list) }, links.first, links.prev, links.next, links.last)
+                    onSuccess(stargazers.map { list -> userDtoToDomainMapper.mapFrom(list) },
+                            links.getState())
                 } else {
-                    onError(response.errorBody()?.string() ?: "Unknown error")
+                    onError(RuntimeException(response.errorBody()?.string() ?: "Unknown error"))
                 }
             }
         }

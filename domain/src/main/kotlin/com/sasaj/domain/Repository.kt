@@ -1,21 +1,19 @@
 package com.sasaj.domain
 
-import com.sasaj.domain.entities.Contributor
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.domain.entities.User
+import com.sasaj.domain.entities.State
 import io.reactivex.Observable
 
 interface Repository {
 
     fun getPublicRepositories(): Observable<List<GithubRepository>>
 
-    fun requestMore(type: Int) : Observable<Boolean>
+    fun requestMore(type: Int, url: String) : Observable<Boolean>
 
     fun getSingleRepository(username: String, repositoryName: String): Observable<GithubRepository>
 
-//    fun getStargazersForRepository(username: String, repositoryName: String): Observable<List<User>>
+    fun getStargazersForRepository(url: String): Triple<Observable<List<User>>, Observable<Any>, Observable<State>>
 
-    fun getStargazersForRepository(url: String): Observable<List<User>>
-
-    fun getContributorsForRepository(url: String): Observable<List<Contributor>>
+    fun getContributorsForRepository(url: String): Triple<Observable<List<User>>, Observable<Any>, Observable<State>>
 }

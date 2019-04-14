@@ -1,11 +1,10 @@
 package com.sasaj.githubapp.userlist
 
-import com.sasaj.domain.entities.Contributor
 import com.sasaj.domain.entities.User
 
 data class UserListViewState(var state: Int = -1,
                              var stargazersList: List<User>? = null,
-                             var contributorsList: List<Contributor>? = null) {
+                             var contributorsList: List<User>? = null) {
 
     companion object {
         const val LOADING: Int = 0

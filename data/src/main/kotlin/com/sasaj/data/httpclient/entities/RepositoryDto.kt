@@ -57,7 +57,7 @@ data class RepositoryDto(
         val notifications_url: String,
         val open_issues: Int,
         val open_issues_count: Int,
-        val owner: UserDto,
+        val owner: StargazerDto,
         @SerializedName("private")
         val private: Boolean,
         val pulls_url: String,

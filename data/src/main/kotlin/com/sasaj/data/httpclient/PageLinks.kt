@@ -1,49 +1,21 @@
 package com.sasaj.data.httpclient
 
+import com.sasaj.domain.entities.State
+
 /**
  * Page link class to be used to determine the links to other pages of request
  * responses encoded in the current response. These will be present if the
  * result set size exceeds the per page limit.
  */
-class PageLinks(linkHeader: String?) {
-    /**  */
-    internal var HEADER_LINK = "Link" //$NON-NLS-1$
-    /**  */
-    internal var HEADER_NEXT = "X-Next" //$NON-NLS-1$
-    /**  */
-    internal var HEADER_LAST = "X-Last" //$NON-NLS-1$
+class PageLinks(linkHeader: String?){
 
-    /**  */
-    internal var META_REL = "rel" //$NON-NLS-1$
-    /**  */
-    internal var META_LAST = "last" //$NON-NLS-1$
-    /**  */
-    internal var META_NEXT = "next" //$NON-NLS-1$
-    /**  */
-    internal var META_FIRST = "first" //$NON-NLS-1$
-    /**  */
-    internal var META_PREV = "prev" //$NON-NLS-1$
+    private var first: String? = null
 
-    /**
-     * @return first
-     */
-    var first: String? = null
-        private set
-    /**
-     * @return last
-     */
-    var last: String? = null
-        private set
-    /**
-     * @return next
-     */
-    var next: String? = null
-        private set
-    /**
-     * @return prev
-     */
-    var prev: String? = null
-        private set
+    private var last: String? = null
+
+    private var next: String? = null
+
+    private var prev: String? = null
 
 
     init {
@@ -83,10 +55,32 @@ class PageLinks(linkHeader: String?) {
         }
     }
 
+
+    fun getState() : State{
+        return State(-1, first, prev, next, last)
+    }
+
     companion object {
 
         private val DELIM_LINKS = "," //$NON-NLS-1$
-
         private val DELIM_LINK_PARAM = ";" //$NON-NLS-1$
+
+        /**  */
+        internal var HEADER_LINK = "Link" //$NON-NLS-1$
+        /**  */
+        internal var HEADER_NEXT = "X-Next" //$NON-NLS-1$
+        /**  */
+        internal var HEADER_LAST = "X-Last" //$NON-NLS-1$
+
+        /**  */
+        internal var META_REL = "rel" //$NON-NLS-1$
+        /**  */
+        internal var META_LAST = "last" //$NON-NLS-1$
+        /**  */
+        internal var META_NEXT = "next" //$NON-NLS-1$
+        /**  */
+        internal var META_FIRST = "first" //$NON-NLS-1$
+        /**  */
+        internal var META_PREV = "prev" //$NON-NLS-1$
     }
 }

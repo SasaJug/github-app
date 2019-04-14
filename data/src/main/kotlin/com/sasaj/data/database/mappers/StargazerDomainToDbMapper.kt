@@ -1,4 +1,4 @@
-package com.sasaj.data.common
+package com.sasaj.data.database.mappers
 
 import com.sasaj.data.database.entities.StargazerDb
 import com.sasaj.domain.common.Mapper
@@ -10,7 +10,6 @@ class StargazerDomainToDbMapper : Mapper<User, StargazerDb>() {
         return StargazerDb(
                 id = from.id,
                 login = from.login,
-                name = from.name,
                 avatarUrl = from.avatarUrl,
                 url = from.url,
                 htmlUrl = from.htmlUrl)

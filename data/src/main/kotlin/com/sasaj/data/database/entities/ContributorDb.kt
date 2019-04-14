@@ -9,7 +9,6 @@ import com.sasaj.data.database.GITHUB_CONTRIBUTORS_TABLE_NAME
 data class ContributorDb(
         @PrimaryKey val id: Long = 0,
         val login: String?,
-        val name: String?,
         val avatarUrl: String?,
         val url: String?,
         val htmlUrl: String?,

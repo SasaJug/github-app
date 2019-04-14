@@ -48,7 +48,7 @@ open class BaseActivity : AppCompatActivity() {
         const val ARG_REPOSITORY_NAME: String = "repository_name"
         const val ARG_REPOSITORY_HTML_URL: String = "repository_html_url"
         const val ARG_USER_URL: String = "user_url"
-        const val CONTRIBUTORS : Int = RequestMoreUseCase.CONST_CONTRIBUTOR
-        const val STARGAZERS : Int = RequestMoreUseCase.CONST_STARGAZER
+        const val CONTRIBUTORS : Int = 1
+        const val STARGAZERS : Int = 2
     }
 }

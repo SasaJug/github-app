@@ -2,11 +2,11 @@ package com.sasaj.data.httpclient
 
 import com.sasaj.data.httpclient.entities.ContributorDto
 import com.sasaj.data.httpclient.entities.RepositoryDto
-import com.sasaj.data.httpclient.entities.UserDto
+import com.sasaj.data.httpclient.entities.StargazerDto
 import io.reactivex.Single
 import retrofit2.Call
 
-open class RetrofitClient (private val service : GitHubService){
+open class RetrofitClient(private val service: GitHubService) {
 
     fun getRepositories(since: Long): Call<List<RepositoryDto>> {
         return service.getRepositories(since)
@@ -16,7 +16,7 @@ open class RetrofitClient (private val service : GitHubService){
         return service.getUserRepository(username, repositoryName)
     }
 
-    fun getStargazers(url: String): Call<List<UserDto>> {
+    fun getStargazers(url: String): Call<List<StargazerDto>> {
         return service.getStargazersForRepository(url)
     }
 

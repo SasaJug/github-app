@@ -2,33 +2,37 @@ package com.sasaj.githubapp.userlist
 
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
-import com.sasaj.domain.entities.Contributor
+import com.sasaj.domain.entities.State
 import com.sasaj.domain.entities.User
-import com.sasaj.domain.usecases.GetRepositoryContributorsUseCase
-import com.sasaj.domain.usecases.GetRepositoryStargazersUseCase
+import com.sasaj.domain.usecases.GetRepositoryUsersUseCase
 import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.common.BaseViewModel
 import com.sasaj.githubapp.common.SingleLiveEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-class UserListViewModel(private val getRepositoryStargazersUseCase: GetRepositoryStargazersUseCase,
-                        private val getRepositoryContributorsUseCase: GetRepositoryContributorsUseCase,
+class UserListViewModel(private val getRepositoryUsersUseCase: GetRepositoryUsersUseCase,
                         private val requestMoreUseCase: RequestMoreUseCase) : BaseViewModel() {
 
     val listLiveData: MutableLiveData<UserListViewState> = MutableLiveData()
     var errorState: SingleLiveEvent<Throwable?> = SingleLiveEvent()
 
+    var state: State? = null
+
     init {
         listLiveData.value = UserListViewState()
     }
 
+    fun getRepositoryUsers(url: String) {
 
-    fun getRepositoryContributors(url: String) {
         val listViewState = listLiveData.value?.copy(state = UserListViewState.LOADING)
         listLiveData.value = listViewState
 
-        addDisposable(getRepositoryContributorsUseCase.getRepositoryContributors(url)
-                .subscribe(
-                        { list: List<Contributor> ->
+        val result = getRepositoryUsersUseCase.getRepositoryUsers(url)
+
+        addDisposable(
+                result.first.observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                        { list: List<User> ->
                             val newListViewState = listLiveData.value?.copy(state = UserListViewState.CONTRIBUTORS_LOADED, contributorsList = list)
                             listLiveData.value = newListViewState
                             errorState.value = null
@@ -36,35 +40,37 @@ class UserListViewModel(private val getRepositoryStargazersUseCase: GetRepositor
                         { e ->
                             errorState.value = e
                         },
-                        { Log.i(TAG, "Contributors list fetched") }
+                        { Log.i(TAG, "Users list fetched") }
                 )
         )
-    }
 
-
-    fun getRepositoryStargazers(url: String) {
-        val listViewState = listLiveData.value?.copy(state = UserListViewState.LOADING)
-        listLiveData.value = listViewState
-
-        addDisposable(getRepositoryStargazersUseCase.getRepositoryStargazers(url)
+        addDisposable(result.second.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { list: List<User> ->
-                            val newListViewState = listLiveData.value?.copy(state = UserListViewState.STARGAZERS_LOADED, stargazersList = list)
-                            listLiveData.value = newListViewState
-                            errorState.value = null
-                        },
-                        { e ->
-                            errorState.value = e
-                        },
-                        { Log.i(TAG, "User list fetched") }
-                )
+                { any: Any -> (any) },
+                { e ->
+                    errorState.value = e
+                },
+                { Log.i(TAG, "") }
+        )
+        )
+
+        addDisposable(result.third.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                { state: State? -> this@UserListViewModel.state = state },
+                { e ->
+                    errorState.value = e
+                },
+                { Log.i(TAG, "") }
+        )
         )
     }
 
 
     fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int, type: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            requestMoreUseCase.requestMore(type).subscribe()
+            state?.next?.let {
+                requestMoreUseCase.requestMore(type, state!!.next!!).subscribe()
+            }
         }
     }
 

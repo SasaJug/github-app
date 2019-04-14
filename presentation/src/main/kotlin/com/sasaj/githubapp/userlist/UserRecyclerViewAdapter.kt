@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.sasaj.domain.entities.Contributor
-import com.sasaj.domain.entities.GitHubUser
 import com.sasaj.domain.entities.User
 import com.sasaj.githubapp.R
 import com.squareup.picasso.Picasso
@@ -19,7 +17,7 @@ class UserRecyclerViewAdapter(private val parentActivity: UserListActivity,
         RecyclerView.Adapter<UserRecyclerViewAdapter.ViewHolder>() {
 
     //    private val onClickListener: View.OnClickListener
-    private var users = listOf<GitHubUser>()
+    private var users = listOf<User>()
 
 //    init {
 //        onClickListener = View.OnClickListener { v ->
@@ -47,7 +45,7 @@ class UserRecyclerViewAdapter(private val parentActivity: UserListActivity,
 //        }
 //    }
 
-    fun setUsers(users: List<GitHubUser>) {
+    fun setUsers(users: List<User>) {
         this.users = users
         notifyDataSetChanged()
     }
@@ -60,31 +58,31 @@ class UserRecyclerViewAdapter(private val parentActivity: UserListActivity,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
-        if (user is User) {
-            Picasso.get().load(user.avatarUrl).into(holder.avatar)
-            holder.login.text = user.login
-            holder.name.text = user.name
-        } else if (user is Contributor) {
-            Picasso.get().load(user.avatarUrl).into(holder.avatar)
-            holder.login.text = user.login
-            holder.name.text = user.name
+        Picasso.get().load(user.avatarUrl).into(holder.avatar)
+        holder.login.text = user.login
+        Picasso.get().load(user.avatarUrl).into(holder.avatar)
+        holder.login.text = user.login
+        holder.name.text = ""
+        if (user.contributions > 0) {
             holder.contributions.visibility = View.VISIBLE
             holder.contributions.text = "Contibutions: ${user.contributions}"
         }
+
+    }
 
 
 //        with(holder.itemView) {
 //            tag = repository
 //            setOnClickListener(onClickListener)
 //        }
-    }
 
-    override fun getItemCount() = users.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val avatar: ImageView = view.avatar
-        val login: TextView = view.login
-        val name: TextView = view.name
-        val contributions: TextView = view.contributions
-    }
+override fun getItemCount() = users.size
+
+inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    val avatar: ImageView = view.avatar
+    val login: TextView = view.login
+    val name: TextView = view.name
+    val contributions: TextView = view.contributions
+}
 }

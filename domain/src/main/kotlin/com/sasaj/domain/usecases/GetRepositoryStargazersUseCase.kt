@@ -18,7 +18,7 @@ class GetRepositoryStargazersUseCase(transformer: Transformer<List<User>>,
     }
 
     override fun createObservable(data: Map<String, Any>?): Observable<List<User>> {
-        return repository.getStargazersForRepository(data!![PARAM_URL] as String)
+        return repository.getStargazersForRepository(data!![PARAM_URL] as String).first
     }
 
     companion object {

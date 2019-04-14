@@ -1,17 +1,17 @@
-package com.sasaj.data.common
+package com.sasaj.data.database.mappers
 
 import com.sasaj.data.database.entities.GithubRepositoryDb
 import com.sasaj.domain.common.Mapper
 import com.sasaj.domain.entities.GithubRepository
 
-class RepositoryDbToDomainMapper : Mapper<GithubRepositoryDb, GithubRepository>() {
+class RepositoryDomainToDbMapper : Mapper<GithubRepository, GithubRepositoryDb>() {
 
-    override fun mapFrom(from: GithubRepositoryDb): GithubRepository {
-        return GithubRepository(
+    override fun mapFrom(from: GithubRepository): GithubRepositoryDb {
+        return GithubRepositoryDb(
                 id = from.id,
                 name = from.name,
                 fullName = from.fullName,
-                ownerName = from.ownerName,
+                ownerName = from.ownerName!!,
                 description = from.description,
                 size = from.size,
                 forksCount = from.forksCount,
@@ -22,9 +22,9 @@ class RepositoryDbToDomainMapper : Mapper<GithubRepositoryDb, GithubRepository>(
         )
     }
 
-    fun mapFrom(from: List<GithubRepositoryDb>): List<GithubRepository> {
-        val repositories: MutableList<GithubRepository> = mutableListOf()
-        from.forEach { gitHubRepositoryDb -> repositories.add(mapFrom(gitHubRepositoryDb)) }
+    fun mapFrom(from: List<GithubRepository>): List<GithubRepositoryDb> {
+        val repositories: MutableList<GithubRepositoryDb> = mutableListOf()
+        from.forEach { gitHubRepository -> repositories.add(mapFrom(gitHubRepository)) }
         return repositories.toList()
     }
 }

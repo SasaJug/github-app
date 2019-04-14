@@ -8,7 +8,6 @@ import com.sasaj.data.database.GITHUB_STARGAZERS_TABLE_NAME
 data class StargazerDb(
         @PrimaryKey val id: Long,
         val login: String?,
-        val name: String?,
         val avatarUrl: String?,
         val url: String?,
         val htmlUrl: String?

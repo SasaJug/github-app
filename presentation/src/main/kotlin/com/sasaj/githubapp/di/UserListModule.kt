@@ -3,6 +3,7 @@ package com.sasaj.githubapp.di
 import com.sasaj.domain.Repository
 import com.sasaj.domain.usecases.GetRepositoryContributorsUseCase
 import com.sasaj.domain.usecases.GetRepositoryStargazersUseCase
+import com.sasaj.domain.usecases.GetRepositoryUsersUseCase
 import com.sasaj.domain.usecases.RequestMoreUseCase
 import com.sasaj.githubapp.common.ASyncTransformer
 import com.sasaj.githubapp.userlist.UserListVMFactory
@@ -27,9 +28,14 @@ class UserListModule {
 
     @Provides
     @Singleton
-    fun provideUserListVMFactory(getRepositoryStargazersUseCase: GetRepositoryStargazersUseCase,
-                                 getRepositoryContributorsUseCase: GetRepositoryContributorsUseCase,
+    fun provideGetRepositoryUsersUseCase(repository: Repository): GetRepositoryUsersUseCase {
+        return GetRepositoryUsersUseCase(ASyncTransformer(), repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserListVMFactory(getRepositoryUsersUseCase: GetRepositoryUsersUseCase,
                                  requestMoreUseCase: RequestMoreUseCase): UserListVMFactory {
-        return UserListVMFactory(getRepositoryStargazersUseCase, getRepositoryContributorsUseCase, requestMoreUseCase)
+        return UserListVMFactory(getRepositoryUsersUseCase, requestMoreUseCase)
     }
 }

@@ -1,16 +1,15 @@
-package com.sasaj.data.common
+package com.sasaj.data.database.mappers
 
 import com.sasaj.data.database.entities.ContributorDb
 import com.sasaj.domain.common.Mapper
-import com.sasaj.domain.entities.Contributor
+import com.sasaj.domain.entities.User
 
-class ContributorDbToDomainMapper : Mapper<ContributorDb, Contributor>() {
+class ContributorDbToDomainMapper : Mapper<ContributorDb, User>() {
 
-    override fun mapFrom(from: ContributorDb): Contributor {
-        return Contributor(
+    override fun mapFrom(from: ContributorDb): User {
+        return User(
                 id = from.id,
                 login = from.login,
-                name = from.name,
                 avatarUrl = from.avatarUrl,
                 url = from.url,
                 htmlUrl = from.htmlUrl,
@@ -18,8 +17,8 @@ class ContributorDbToDomainMapper : Mapper<ContributorDb, Contributor>() {
 
     }
 
-    fun mapFrom(from: List<ContributorDb>): List<Contributor> {
-        val contributors: MutableList<Contributor> = mutableListOf()
+    fun mapFrom(from: List<ContributorDb>): List<User> {
+        val contributors: MutableList<User> = mutableListOf()
         from.forEach { contributorDb -> contributors.add(mapFrom(contributorDb)) }
         return contributors.toList()
     }

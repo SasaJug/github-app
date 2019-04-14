@@ -1,6 +1,6 @@
 package com.sasaj.data.httpclient.entities
 
-data class UserDto(
+data class StargazerDto(
         val avatar_url: String,
         val events_url: String,
         val followers_url: String,

@@ -1,10 +1,10 @@
 package com.sasaj.data
 
-import com.sasaj.data.common.*
+import com.sasaj.data.database.mappers.*
 import com.sasaj.data.database.AppDb
-import com.sasaj.domain.entities.Contributor
 import com.sasaj.domain.entities.GithubRepository
 import com.sasaj.domain.entities.User
+import com.sasaj.domain.entities.State
 import io.reactivex.Observable
 
 class LocalRepository(private val appDb: AppDb,
@@ -13,7 +13,9 @@ class LocalRepository(private val appDb: AppDb,
                       private val contributorDbToDomainMapper: ContributorDbToDomainMapper,
                       private val contributorDomainToDbMapper: ContributorDomainToDbMapper,
                       private val stargazerDbToDomainMapper: StargazerDbToDomainMapper,
-                      private val stargazerDomainToDbMapper: StargazerDomainToDbMapper) {
+                      private val stargazerDomainToDbMapper: StargazerDomainToDbMapper,
+                      private val stateDbToDomainMapper: StateDbToDomainMapper,
+                      private val stateDomainToDbMapper: StateDomainToDbMapper) {
 
 
     fun getPublicRepositories(): Observable<List<GithubRepository>> {
@@ -29,11 +31,11 @@ class LocalRepository(private val appDb: AppDb,
         appDb.gitHubRepositoryDao().deleteAll()
     }
 
-    fun getContributors(): Observable<List<Contributor>> {
+    fun getContributors(): Observable<List<User>> {
         return appDb.contributorDao().getContributors().map { contributorDbList -> contributorDbToDomainMapper.mapFrom(contributorDbList) }.toObservable()
     }
 
-    fun insertContributors(list: List<Contributor>) {
+    fun insertContributors(list: List<User>) {
         val listDb = list.map { contributor -> contributorDomainToDbMapper.mapFrom(contributor) }
         appDb.contributorDao().insert(listDb)
     }
@@ -41,6 +43,8 @@ class LocalRepository(private val appDb: AppDb,
     fun deleteAllContributors() {
         appDb.contributorDao().deleteAll()
     }
+
+
 
     fun getStargazers(): Observable<List<User>> {
         return appDb.stargazerDao().getStargazers().map { stargazerDbList -> stargazerDbToDomainMapper.mapFrom(stargazerDbList) }.toObservable()
@@ -54,4 +58,20 @@ class LocalRepository(private val appDb: AppDb,
     fun deleteAllStargazers() {
         appDb.stargazerDao().deleteAll()
     }
+
+
+    fun getState(id: Int): Observable<State> {
+        return appDb.stateDao().getState(id).map { stateDb -> stateDbToDomainMapper.mapFrom(stateDb) }.toObservable()
+    }
+
+    fun insertState(state: State) {
+        val stateDb = stateDomainToDbMapper.mapFrom(state)
+        appDb.stateDao().insert(stateDb)
+    }
+
+    fun deleteState(id: Int) {
+        appDb.stateDao().delete(id)
+    }
+
+
 }
