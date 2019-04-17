@@ -32,9 +32,6 @@ class UserListActivity : BaseActivity() {
     private lateinit var vm: UserListViewModel
     private lateinit var adapter: UserRecyclerViewAdapter
 
-    private var type: Int = 0
-    private lateinit var url: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository_list)
@@ -53,8 +50,8 @@ class UserListActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        type = intent.getIntExtra(ARG_USER_TYPE, 0)
-        url = intent.getStringExtra(ARG_USER_URL)
+        vm.type = intent.getIntExtra(ARG_USER_TYPE, 0)
+        vm.url = intent.getStringExtra(ARG_USER_URL)
 
         if (repository_detail_container != null) {
             twoPane = true
@@ -66,7 +63,7 @@ class UserListActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        vm.getRepositoryUsers(url)
+        vm.getRepositoryUsers()
     }
 
 
@@ -112,7 +109,7 @@ class UserListActivity : BaseActivity() {
                 val visibleItemCount = layoutManager.childCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
-                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount, type)
+                vm.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
             }
         })
     }

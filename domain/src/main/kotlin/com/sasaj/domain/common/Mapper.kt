@@ -3,6 +3,7 @@ package com.sasaj.domain.common
 import io.reactivex.Observable
 
 abstract class Mapper<in E, T> {
+
     abstract fun mapFrom(from: E): T
 
     fun observable(from: E): Observable<T> {

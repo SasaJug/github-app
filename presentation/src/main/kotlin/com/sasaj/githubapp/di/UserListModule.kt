@@ -29,7 +29,7 @@ class UserListModule {
     @Provides
     @Singleton
     fun provideGetRepositoryUsersUseCase(repository: Repository): GetRepositoryUsersUseCase {
-        return GetRepositoryUsersUseCase(ASyncTransformer(), repository)
+        return GetRepositoryUsersUseCase(repository)
     }
 
     @Provides

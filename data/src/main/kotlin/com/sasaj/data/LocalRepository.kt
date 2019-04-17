@@ -60,8 +60,8 @@ class LocalRepository(private val appDb: AppDb,
     }
 
 
-    fun getState(id: Int): Observable<State> {
-        return appDb.stateDao().getState(id).map { stateDb -> stateDbToDomainMapper.mapFrom(stateDb) }.toObservable()
+    fun getState(id: Int): State? {
+        return stateDbToDomainMapper.mapFrom(appDb.stateDao().getState(id))
     }
 
     fun insertState(state: State) {

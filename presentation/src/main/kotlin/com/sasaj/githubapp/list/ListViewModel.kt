@@ -41,7 +41,7 @@ class ListViewModel(private val getAllRepositoriesUseCase: GetAllRepositoriesUse
 
     fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            requestMoreUseCase.requestMore(State.CONST_REPOSITORY, "").subscribe()
+            requestMoreUseCase.requestMore(State.CONST_REPOSITORY).subscribe()
         }
     }
 

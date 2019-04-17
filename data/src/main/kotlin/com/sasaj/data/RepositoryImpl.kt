@@ -10,13 +10,12 @@ import io.reactivex.subjects.PublishSubject
 
 class RepositoryImpl(private val remoteRepository: RemoteRepository, private val localRepository: LocalRepository) : Repository {
 
-
     private val errorObservable: PublishSubject<Any> = PublishSubject.create()
 
     private var lastRepository: Long = 0
-
     private var currentStargazerUrl: String? = null
     private var currentContributorUrl: String? = null
+    private var currentState: State? = null
 
     // avoid triggering multiple requests in the same time
     private var isRequestInProgress = false
@@ -50,7 +49,7 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     }
 
 
-    override fun getStargazersForRepository(url: String): Triple<Observable<List<User>>, Observable<Any>, Observable<State>> {
+    override fun getStargazersForRepository(url: String): Pair<Observable<List<User>>, Observable<Any>> {
 
         if (currentStargazerUrl == null || currentStargazerUrl != url) {
             currentStargazerUrl = url
@@ -58,8 +57,10 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
             localRepository.deleteState(State.CONST_STARGAZER)
             requestAndSaveStargazers(url)
         }
+
+        currentState = localRepository.getState(State.CONST_STARGAZER)
         // Get data from the local cache
-        return Triple(localRepository.getStargazers(), errorObservable, localRepository.getState(State.CONST_STARGAZER))
+        return Pair(localRepository.getStargazers(), errorObservable)
     }
 
     private fun requestAndSaveStargazers(url: String) {
@@ -71,6 +72,7 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                     localRepository.insertStargazers(stargazers)
                     state.id = State.CONST_STARGAZER
                     localRepository.insertState(state)
+                    currentState = state
                     isRequestInProgress = false
                 },
                 { error ->
@@ -80,7 +82,7 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                 })
     }
 
-    override fun getContributorsForRepository(url: String): Triple<Observable<List<User>>, Observable<Any>, Observable<State>> {
+    override fun getContributorsForRepository(url: String): Pair<Observable<List<User>>, Observable<Any>> {
 
         if (currentContributorUrl == null || currentContributorUrl != url) {
             currentContributorUrl = url
@@ -88,8 +90,9 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
             localRepository.deleteState(State.CONST_CONTRIBUTOR)
             requestAndSaveContributors(url)
         }
+        currentState = localRepository.getState(State.CONST_CONTRIBUTOR)
         // Get data from the local cache
-        return Triple(localRepository.getContributors(), errorObservable, localRepository.getState(State.CONST_CONTRIBUTOR))
+        return Pair(localRepository.getContributors(), errorObservable)
     }
 
     private fun requestAndSaveContributors(url: String) {
@@ -101,6 +104,7 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
                     localRepository.insertContributors(contributors)
                     state.id = State.CONST_CONTRIBUTOR
                     localRepository.insertState(state)
+                    currentState = state
                     isRequestInProgress = false
                 },
                 { error ->
@@ -111,13 +115,18 @@ class RepositoryImpl(private val remoteRepository: RemoteRepository, private val
     }
 
 
-    override fun requestMore(type: Int, url: String): Observable<Boolean> {
-        return Observable.fromCallable<Boolean> {
-            when (type) {
-                State.CONST_REPOSITORY -> requestAndSaveRepositories()
-                State.CONST_CONTRIBUTOR -> requestAndSaveContributors(url)
-                State.CONST_STARGAZER -> requestAndSaveStargazers(url)
+    override fun requestMore(type: Int): Observable<Boolean> {
+
+        when (type) {
+            State.CONST_CONTRIBUTOR -> currentState?.next?.let {
+                requestAndSaveContributors(currentState!!.next!!)
             }
+            State.CONST_STARGAZER -> currentState?.next?.let {
+                requestAndSaveStargazers(currentState!!.next!!)
+            }
+            State.CONST_REPOSITORY -> requestAndSaveRepositories()
+        }
+        return Observable.fromCallable<Boolean> {
             true
         }
     }

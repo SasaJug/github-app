@@ -15,7 +15,7 @@ interface StateRepositoryDao {
     fun insert(stateDb: StateDb)
 
     @Query("SELECT * FROM github_state_table WHERE id = :id")
-    fun getState(id: Int): Flowable<StateDb>
+    fun getState(id: Int): StateDb
 
     @Query("DELETE FROM github_state_table WHERE id = :id")
     fun delete(id: Int)

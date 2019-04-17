@@ -3,20 +3,19 @@ package com.sasaj.domain.usecases
 import com.sasaj.domain.Repository
 import com.sasaj.domain.common.Transformer
 import com.sasaj.domain.entities.User
-import com.sasaj.domain.entities.State
 import io.reactivex.Observable
 import java.util.*
 
-class GetRepositoryUsersUseCase( private val transformer: Transformer<Any>, private val repository: Repository){
+class GetRepositoryUsersUseCase(private val repository: Repository){
 
 
-    fun getRepositoryUsers(url: String): Triple<Observable<List<User>>, Observable<Any>, Observable<State>> {
+    fun getRepositoryUsers(url: String): Pair<Observable<List<User>>, Observable<Any>> {
         val data = HashMap<String, String>()
         data[PARAM_URL] = url
         return result(data)
     }
 
-    private fun createObservable(data: Map<String, Any>?): Triple<Observable<List<User>>, Observable<Any>, Observable<State>> {
+    private fun createObservables(data: Map<String, Any>?): Pair<Observable<List<User>>, Observable<Any>> {
         val url = data!![PARAM_URL] as String
         return if(url.contains(URL_KEYWORD)){
             repository.getContributorsForRepository(data!![PARAM_URL] as String)
@@ -25,12 +24,8 @@ class GetRepositoryUsersUseCase( private val transformer: Transformer<Any>, priv
         }
     }
 
-    private fun result(withData: Map<String, Any>? = null) : Triple<Observable<List<User>>, Observable<Any>, Observable<State>>{
-        val result = createObservable(withData)
-        result.first.compose(transformer)
-        result.second.compose(transformer)
-        result.first.compose(transformer)
-        return result
+    private fun result(withData: Map<String, Any>? = null) : Pair<Observable<List<User>>, Observable<Any>>{
+        return createObservables(withData)
     }
 
     companion object {

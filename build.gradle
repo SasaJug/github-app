@@ -45,6 +45,7 @@ ext {
 
     // App dependencies
     supportLibraryVersion = '28.0.0'
+    androidAnnotationsVersion = '26.1.0'
     daggerVersion = '2.15'
     jsr250Version = '1.0'
     constraintLayoutVersion = '1.1.3'

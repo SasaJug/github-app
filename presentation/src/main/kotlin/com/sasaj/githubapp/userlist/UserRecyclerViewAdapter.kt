@@ -16,34 +16,8 @@ class UserRecyclerViewAdapter(private val parentActivity: UserListActivity,
                               private val twoPane: Boolean) :
         RecyclerView.Adapter<UserRecyclerViewAdapter.ViewHolder>() {
 
-    //    private val onClickListener: View.OnClickListener
     private var users = listOf<User>()
 
-//    init {
-//        onClickListener = View.OnClickListener { v ->
-//            val repository = v.tag as GithubRepository
-//            if (twoPane) {
-//                val fragment = RepositoryDetailFragment().apply {
-//                    arguments = Bundle().apply {
-//                        putString(ARG_USER_NAME, repository.ownerName)
-//                        putString(ARG_REPOSITORY_NAME, repository.name)
-//                    }
-//                }
-//                parentActivity.supportFragmentManager
-//                        .beginTransaction()
-//                        .replace(R.id.repository_detail_container, fragment)
-//                        .commit()
-//            } else {
-//                val intent = Intent(v.context, RepositoryDetailActivity::class.java).apply {
-//                    putExtra(ARG_USER_NAME, repository.ownerName)
-//                    putExtra(ARG_REPOSITORY_NAME, repository.name)
-//                    putExtra(ARG_REPOSITORY_HTML_URL, repository.htmlUrl)
-//                }
-//
-//                v.context.startActivity(intent)
-//            }
-//        }
-//    }
 
     fun setUsers(users: List<User>) {
         this.users = users
@@ -71,18 +45,12 @@ class UserRecyclerViewAdapter(private val parentActivity: UserListActivity,
     }
 
 
-//        with(holder.itemView) {
-//            tag = repository
-//            setOnClickListener(onClickListener)
-//        }
+    override fun getItemCount() = users.size
 
-
-override fun getItemCount() = users.size
-
-inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    val avatar: ImageView = view.avatar
-    val login: TextView = view.login
-    val name: TextView = view.name
-    val contributions: TextView = view.contributions
-}
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val avatar: ImageView = view.avatar
+        val login: TextView = view.login
+        val name: TextView = view.name
+        val contributions: TextView = view.contributions
+    }
 }
